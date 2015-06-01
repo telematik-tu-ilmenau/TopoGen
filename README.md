@@ -11,6 +11,7 @@ Creates worldwide underlay topologies and outputs them in the following formats:
 
 TopoGen is built via CMake and uses the following libraries:
 
+* Boost
 * CGAL
 * COIN-OR::LEMON
 * GMP

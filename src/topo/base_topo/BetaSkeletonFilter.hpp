@@ -35,7 +35,6 @@
 #include "geo/CityNode.hpp"
 #include "geo/GeographicNode.hpp"
 #include "topo/Graph.hpp"
-#include "util/ConcurrentQueue.hpp"
 #include <lemon/list_graph.h>
 #include <map>
 #include <utility>

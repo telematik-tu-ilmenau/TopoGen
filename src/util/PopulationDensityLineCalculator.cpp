@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,34 +38,45 @@ PopulationDensityLineCalculator::PopulationDensityLineCalculator(PopulationDensi
 PopulationDensityLineCalculator::~PopulationDensityLineCalculator() {
 }
 
+Position PopulationDensityLineCalculator::getIntermediatePointAt(Position& p1, Position& p2, double distance, double percent) {
+    using namespace GeometricHelpers;
+
+    Position p;
+
+    double A = sin((1 - percent) * distance) / sin(distance);
+    double B = sin(percent * distance) / sin(distance);
+    double lat1 = deg2rad(p1.lat);
+    double lon1 = deg2rad(p1.lon);
+
+    double lat2 = deg2rad(p2.lat);
+    double lon2 = deg2rad(p2.lon);
+    double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
+    double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
+    double z = A * sin(lat1) + B * sin(lat2);
+
+    p.lat = rad2deg(atan2(z, sqrt(x * x + y * y)));
+    p.lon = rad2deg(atan2(y, x));
+
+    assert(Util::checkBounds(p));
+
+    return p;
+}
+
 DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(Position& p1, Position& p2) {
-    checkBounds(p1, p2);
+    using namespace GeometricHelpers;
+    assert(Util::checkBounds(p1));
+    assert(Util::checkBounds(p2));
 
     DensityVector_Ptr result(new DensityVector);
 
     // Aviation Formulas
     // Intermediate Points on a great circle
     // http://williams.best.vwh.net/avform.htm#Crs
-    double distance = GeometricHelpers::sphericalDist(p1, p2);
-    double increment = GeometricHelpers::deg2rad(_reader->cellsize()) / distance;
-
-    double A, B, x, y, z, lat1, lat2, lon1, lon2;
-    Position p;
+    double distance = sphericalDist(p1, p2);
+    double increment = deg2rad(_reader->cellsize()) / distance;
 
     for (double percent = 0.0; percent <= 1.0; percent += increment) {
-        A = sin((1 - percent) * distance) / sin(distance);
-        B = sin(percent * distance) / sin(distance);
-        lat1 = GeometricHelpers::deg2rad(p1.lat);
-        lon1 = GeometricHelpers::deg2rad(p1.lon);
-
-        lat2 = GeometricHelpers::deg2rad(p2.lat);
-        lon2 = GeometricHelpers::deg2rad(p2.lon);
-        x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
-        y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
-        z = A * sin(lat1) + B * sin(lat2);
-        p.lat = GeometricHelpers::rad2deg(atan2(z, sqrt(x * x + y * y)));
-        p.lon = GeometricHelpers::rad2deg(atan2(y, x));
-
+        Position p = getIntermediatePointAt(p1, p2, distance, percent);
         appendLinePoint(result, p);
     }
 

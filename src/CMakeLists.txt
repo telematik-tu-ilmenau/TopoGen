@@ -11,10 +11,11 @@ add_executable(topoGen ${topoSources})
 # LINKER OPTIONS
 #
 
-find_package(Boost REQUIRED COMPONENTS program_options system thread)
+find_package(Boost REQUIRED COMPONENTS log log_setup program_options system thread)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+add_definitions(-DBOOST_LOG_DYN_LINK)
 
 find_package(CGAL REQUIRED)
 include_directories(${CGAL_INCLUDE_DIR})

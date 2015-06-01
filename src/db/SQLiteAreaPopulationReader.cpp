@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
 #include <sstream>
 #include <cassert>
 #include <iostream>
+#include <boost/log/trivial.hpp>
 
 SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, double lat, double lon, double length)
     : _lat(lat), _lon(lon), _length(length) {
@@ -38,11 +39,11 @@ SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, doubl
 
     // If connection failed, handle returns NULL
     if (retval) {
-        std::cerr << "Database connection failed" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Database connection failed in SQLiteAreaPopulationReader";
     }
+    assert(retval == SQLITE_OK);
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath << " successfully established in SQLiteAreaPopulationReader!";
 
-    // std::cout << "Checking box: " << _lat - (length / 2) << " " << _lat + (length / 2) << " " << lon - (length / 2)
-    // << " " << _lon + (length / 2) << std::endl;
     std::string queryString(
         " SELECT geo.Latitude AS Latitude,"
         "        geo.Longitude AS Longitude,"

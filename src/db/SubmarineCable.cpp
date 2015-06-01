@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,14 @@
 
 #include "SubmarineCable.hpp"
 #include <iostream>
+#include <boost/log/trivial.hpp>
 
 SubmarineCable::SubmarineCable(std::string dbPath) {
     int retval = sqlite3_open(dbPath.c_str(), &_ppDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
-        std::cerr << "Database connection failed" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Database connection failed in SubmarineCable!";
     }
 
     std::string queryString = "SELECT lat1, lon1, lat2, lon2 FROM submarinecable_edges";

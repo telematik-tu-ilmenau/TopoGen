@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,9 +52,7 @@ using GeometricHelpers::rad2deg;
 using GeometricHelpers::sphericalDist;
 
 BetaSkeletonFilter::BetaSkeletonFilter(BaseTopology_Ptr baseTopo)
-    : _baseTopo(baseTopo),
-      _graph(_baseTopo->getGraph()),
-      _nodeGeoNodeMap(_baseTopo->getNodeMap()) {
+    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeGeoNodeMap(_baseTopo->getNodeMap()) {
 }
 
 BetaSkeletonFilter::~BetaSkeletonFilter() {

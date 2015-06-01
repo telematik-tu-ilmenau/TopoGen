@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,15 +30,16 @@
 #include "LandingPointReader.hpp"
 #include <cassert>
 #include <iostream>
+#include <boost/log/trivial.hpp>
 
 LandingPointReader::LandingPointReader(std::string dbName) {
     int retval = sqlite3_open(dbName.c_str(), &_ppDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
-        std::cerr << "Database connection failed" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Database connection failed in LandingPointReader!";
     }
-    // std::cout << "Connection successful" << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbName << " successfully established in LandingPointReader!";
 
     std::string queryString("SELECT id, latitude, longitude, name, country from landingpoints");
 

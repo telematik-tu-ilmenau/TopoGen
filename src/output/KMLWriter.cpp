@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,10 +42,7 @@
 #include <iterator>
 
 KMLWriter::KMLWriter(BaseTopology_Ptr baseTopo)
-    : _baseTopo(baseTopo),
-      _graph(_baseTopo->getGraph()),
-      _nodeInfos(_baseTopo->getNodeMap()),
-      _kmlOut() {
+    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeInfos(_baseTopo->getNodeMap()), _kmlOut() {
     setEdgeColor("ffffff", 1.0);
     setPinColor("ffffff", 1.0);
 }
@@ -55,8 +52,7 @@ KMLWriter::~KMLWriter() {
 
 void KMLWriter::write(const char* filename) {
     std::ofstream kmlFile(filename);
-    std::copy(std::istreambuf_iterator<char>(_kmlOut),
-              std::istreambuf_iterator<char>(),
+    std::copy(std::istreambuf_iterator<char>(_kmlOut), std::istreambuf_iterator<char>(),
               std::ostreambuf_iterator<char>(kmlFile));
     kmlFile.close();
 }
@@ -75,16 +71,16 @@ void KMLWriter::createKML() {
         {
             // set iconstyle
             _kmlOut << "<IconStyle>\n";
-                _kmlOut << "<color>" << _pincolor << "</color>";
+            _kmlOut << "<color>" << _pincolor << "</color>";
             _kmlOut << "</IconStyle>\n";
         }
 
         {
             // set iconstyle
             _kmlOut << "<LineStyle>\n";
-                _kmlOut << "<color>" << _edgecolor << "</color>\n";
-                _kmlOut << "<colorMode>normal</colorMode>\n";
-                _kmlOut << "<width>2</width>\n";
+            _kmlOut << "<color>" << _edgecolor << "</color>\n";
+            _kmlOut << "<colorMode>normal</colorMode>\n";
+            _kmlOut << "<width>2</width>\n";
             _kmlOut << "</LineStyle>\n";
         }
 
@@ -98,16 +94,16 @@ void KMLWriter::createKML() {
         {
             // set iconstyle
             _kmlOut << "<IconStyle>\n";
-                _kmlOut << "<color>" << _seacablePinColor << "</color>";
+            _kmlOut << "<color>" << _seacablePinColor << "</color>";
             _kmlOut << "</IconStyle>\n";
         }
 
         {
             // set iconstyle
             _kmlOut << "<LineStyle>\n";
-                _kmlOut << "<color>" << _seacableColor << "</color>\n";
-                _kmlOut << "<colorMode>normal</colorMode>\n";
-                _kmlOut << "<width>2</width>\n";
+            _kmlOut << "<color>" << _seacableColor << "</color>\n";
+            _kmlOut << "<colorMode>normal</colorMode>\n";
+            _kmlOut << "<width>2</width>\n";
             _kmlOut << "</LineStyle>\n";
         }
 
@@ -187,7 +183,6 @@ void KMLWriter::createKML() {
             _kmlOut << "#styleDefault";
 
         _kmlOut << "</styleUrl>\n";
-
 
         _kmlOut << "<Point>\n";
 

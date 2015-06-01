@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 
 #include "Util.hpp"
 #include <cmath>
+#include <cassert>
 
 double Util::hs(double theta) {
     double t = sin(theta / 2.0);
@@ -36,6 +37,16 @@ double Util::hs(double theta) {
 }
 
 double Util::ihs(double theta) {
+    assert(theta > 0.0);
     return 2.0 * asin(sqrt(theta));
 }
 
+bool Util::checkBounds(double lat, double lon){
+    bool latOk = -90.0 <= lat && lat <= 90.0;
+    bool lonOk = -180.0 <= lon && lon <= 180.0;
+    return latOk && lonOk;
+}
+
+bool Util::checkBounds(Position& p){
+    return checkBounds(p.lat, p.lon);
+}

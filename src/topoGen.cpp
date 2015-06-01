@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,7 @@
 #include "topo/sim_topo/SimulationTopology.hpp"
 #include "util/PopulationDensityLineCalculator.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
 #include <fstream>
@@ -57,7 +58,8 @@
 constexpr double EARTH_RADIUS_KM = 6371.000785;
 
 void addSimulationNodes(SimulationTopology_Ptr simTopo, std::string simNodesJSONFile) {
-    // read nodes from json file
+    BOOST_LOG_TRIVIAL(info) << "read simulation nodes from " << simNodesJSONFile;
+
     std::ifstream jsonFile(simNodesJSONFile.c_str(), std::ifstream::binary);
     Json::Reader jsonReader;
     Json::Value root;
@@ -73,6 +75,8 @@ void addSimulationNodes(SimulationTopology_Ptr simTopo, std::string simNodesJSON
             new SimulationNode(node["id"].asInt(), node["latitude"].asDouble(), node["longitude"].asDouble()));
         simTopo->addNode(simNode);
     }
+
+    BOOST_LOG_TRIVIAL(info) << "inserted " << nodes.size() << " simulation nodes";
 
     jsonFile.close();
 }
@@ -95,6 +99,8 @@ void writeKMLGraph(BaseTopology_Ptr baseTopo, Config_Ptr kmlConfig, std::string 
     kmlw->setSeacablePinColor(seacablePinColor, seacablePinAlpha);
     kmlw->createKML();
     kmlw->write(outFileName.c_str());
+
+    BOOST_LOG_TRIVIAL(info) << "wrote KML graph to " << outFileName;
 }
 
 void writeSimpleGraph(BaseTopology_Ptr baseTopo, Config_Ptr simpleGraphConfig) {
@@ -108,6 +114,8 @@ void writeSimpleGraph(BaseTopology_Ptr baseTopo, Config_Ptr simpleGraphConfig) {
     std::unique_ptr<GraphOutput> graphWriter(new GraphOutput(baseTopo, nodeFile, edgeFile));
     graphWriter->writeNodes();
     graphWriter->writeEdges();
+
+    BOOST_LOG_TRIVIAL(info) << "wrote simple graph to " << nodeFileName << " and " << edgeFileName;
 }
 
 void writeJSONGraph(BaseTopology_Ptr baseTopo, Config_Ptr config, std::string jsonFileNameCLI) {
@@ -132,6 +140,8 @@ void writeJSONGraph(BaseTopology_Ptr baseTopo, Config_Ptr config, std::string js
     } else {
         jsonWriter->write(jsonFileName.c_str());
     }
+
+    BOOST_LOG_TRIVIAL(info) << "wrote JSON graph to " << jsonFileNameCLI;
 }
 
 int main(int argc, char** argv) {
@@ -150,6 +160,7 @@ int main(int argc, char** argv) {
     }
 
     Locations_Ptr locations = nodeImport->getLocations();
+    BOOST_LOG_TRIVIAL(info) << "imported " << locations->size() << " locations";
 
     /*
      *  FILTER LOCATIONS WITH OPTICS
@@ -166,6 +177,8 @@ int main(int argc, char** argv) {
         new OPTICSFilter(locations, neighbourCluster_eps, neighbourCluster_minPts, 0.8 * neighbourCluster_eps));
     neighbourCluster_optics->filter(args->getSeed());
 
+    BOOST_LOG_TRIVIAL(info) << locations->size() << " locations after OPTICS (neighbors)";
+
     unsigned int metropolisCluster_minPts = config->get<unsigned int>("metropolisCluster.minPts");
     assert(metropolisCluster_minPts > 0);
 
@@ -177,9 +190,15 @@ int main(int argc, char** argv) {
         new OPTICSFilter(locations, metropolisCluster_eps, metropolisCluster_minPts, 0.8 * metropolisCluster_eps));
     metropolisCluster_optics->filter(args->getSeed());
 
+    BOOST_LOG_TRIVIAL(info) << locations->size() << " locations after OPTICS (metropolis)";
+
     // add all nodes to kdtree for node merging
     nodeImport->importSeacableLandingPoints();
+    BOOST_LOG_TRIVIAL(info) << locations->size() << " locations after importing landingpoints";
+
     nodeImport->importSubmarineCableEdgesWaypoints();
+    BOOST_LOG_TRIVIAL(info) << locations->size() << " locations after importing seacable waypoints";
+
 
     // reset nodeIDs of all imported nodes, corresponding ids in lemon graphs go from 0 to numNodes-1
     int nodeId = 0;

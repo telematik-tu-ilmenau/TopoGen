@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
 #include "geo/CityNode.hpp"
 #include "lemon/maps.h"
 #include "lemon/connectivity.h"
+#include <boost/log/trivial.hpp>
 
 BaseTopology::BaseTopology()
     : _graph(new Graph),
@@ -73,7 +74,7 @@ void BaseTopology::prune() {
     Graph_Ptr graph = getGraph();
     Graph::NodeMap<int> nodeMap(*graph);
     int numConnectedComponents = lemon::connectedComponents(*graph, nodeMap);
-    std::cout << "Graph has " << numConnectedComponents << " components!" << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "Graph has " << numConnectedComponents << " components!";
 
     // count members of first component
     std::map<int, int> componentCounter;

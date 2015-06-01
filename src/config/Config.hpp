@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,8 @@ class Config {
 
     Config_Ptr subConfig(std::string propertyName);
 
-    template <class T> T get(std::string);
+    template <class T>
+    T get(std::string);
 
    protected:
     Config(Json::Value node);

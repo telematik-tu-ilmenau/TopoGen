@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,13 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
+#include "geo/Position.hpp"
+
 namespace Util {
-double hs(double theta);
-double ihs(double theta);
+    double hs(double theta);
+    double ihs(double theta);
+    bool checkBounds(double lat, double lon);
+    bool checkBounds(Position& p);
 };
 
 #endif

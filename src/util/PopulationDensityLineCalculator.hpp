@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@
 
 #include "db/PopulationDensityReader.hpp"
 #include "geo/Position.hpp"
+#include "util/Util.hpp"
 #include <memory>
 #include <utility>
 #include <cassert>
@@ -52,19 +53,9 @@ class PopulationDensityLineCalculator {
 
    protected:
    private:
-    void checkBounds(Position& p1, Position& p2) {
-        // bounds check for positions
-        assert(p1.lat >= -90.0);
-        assert(p1.lat <= 90.0);
-        assert(p1.lon >= -180.0);
-        assert(p1.lon <= 180.0);
-        assert(p2.lat >= -90.0);
-        assert(p2.lat <= 90.0);
-        assert(p2.lon >= -180.0);
-        assert(p2.lon <= 180.0);
-    }
-
     double calcDist(Position& p1, Position& p2);
+
+    Position getIntermediatePointAt(Position& p1, Position& p2, double distance, double percent);
 
     void appendLinePoint(DensityVector_Ptr result, Position& p);
 

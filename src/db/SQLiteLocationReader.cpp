@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
 #include <sstream>
 #include <cassert>
 #include <iostream>
+#include <boost/log/trivial.hpp>
 
 SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThreshold)
     : _populationThreshold(populationThreshold) {
@@ -38,8 +39,9 @@ SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThr
 
     // If connection failed, handle returns NULL
     if (retval) {
-        std::cerr << "Database connection failed" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "Database connection failed for SQLiteLocationReader";
     }
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath << " successfully established in SQLiteLocationReader!";
 
     std::string queryString(
         " SELECT geo.Name AS Name,"

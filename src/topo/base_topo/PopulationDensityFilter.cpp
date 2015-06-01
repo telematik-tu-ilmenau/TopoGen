@@ -29,6 +29,7 @@
 
 #include "PopulationDensityFilter.hpp"
 
+#include <boost/log/trivial.hpp>
 #include "config/Config.hpp"
 #include "config/PredefinedValues.hpp"
 #include "db/InternetUsageStatistics.hpp"
@@ -133,7 +134,8 @@ void PopulationDensityFilter::filter(void) {
         }
     }
 
-    // erase edges
+    BOOST_LOG_TRIVIAL(info) << edges_to_delete.size() << " edges deleted by population density filter";
+
     for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         graph.erase(*edge);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 
 #include "PopulationDensityReader.hpp"
 #include "config/PredefinedValues.hpp"
+#include "util/Util.hpp"
 #include <cassert>
 #include <string>
 #include <fstream>
@@ -118,10 +119,7 @@ class RangeCheck {
 };
 
 CellPosition PopulationDensityReader::calcDataPosition(double lat, double lon) {
-    assert(lat >= -90.0);
-    assert(lat <= 90.0);
-    assert(lon >= -180.0);
-    assert(lon <= 180.0);
+    assert(Util::checkBounds(lat, lon));
 
     double xllcorner = _header.xllcorner;
     double yllcorner = _header.yllcorner;

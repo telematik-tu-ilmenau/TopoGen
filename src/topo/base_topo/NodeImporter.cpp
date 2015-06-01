@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014, Michael Grey and Markus Theil
+ * Copyright (c) 2013-2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@
 #include <string>
 #include <random>
 #include <cassert>
+#include <boost/log/trivial.hpp>
 
 NodeImporter::NodeImporter(void)
     : _nodenumber(0), _locations(new Locations), _dbFilename(PredefinedValues::dbFilePath()) {
@@ -248,6 +249,7 @@ void NodeImporter::importSubmarineCableEdges(BaseTopology_Ptr base_topo) {
         assert(u != v);
         base_topo->addEdge(u, v, edge_ptr);
     }
-    std::cout << "SubmarineCables: Skipped " << skipped
-              << " edge entries due to mapping to same Coordinate or invalid database info." << std::endl;
+
+    BOOST_LOG_TRIVIAL(info) << "SubmarineCables: Skipped " << skipped
+                            << " edge entries due to mapping to same Coordinate or invalid database info.";
 }

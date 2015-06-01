@@ -43,22 +43,101 @@
 #include "topo/Graph.hpp"
 #include "topo/sim_topo/SimulationTopology.hpp"
 #include "util/PopulationDensityLineCalculator.hpp"
+
 #include <cassert>
 #include <cmath>
 #include <fstream>
+#include <json/json.h>
 #include <memory>
 #include <random>
 #include <set>
 #include <string>
 #include <vector>
-#include <json/json.h>
 
 constexpr double EARTH_RADIUS_KM = 6371.000785;
 
+void addSimulationNodes(SimulationTopology_Ptr simTopo, std::string simNodesJSONFile) {
+    // read nodes from json file
+    std::ifstream jsonFile(simNodesJSONFile.c_str(), std::ifstream::binary);
+    Json::Reader jsonReader;
+    Json::Value root;
+    bool parsed = jsonReader.parse(jsonFile, root);
+    // check if parsing was successfull
+    assert(parsed == true);
+
+    // insert each node
+    const Json::Value nodes = root["nodes"];
+    for (int i = 0; i < static_cast<int>(nodes.size()); ++i) {
+        Json::Value node = nodes[i];
+        SimulationNode_Ptr simNode(
+            new SimulationNode(node["id"].asInt(), node["latitude"].asDouble(), node["longitude"].asDouble()));
+        simTopo->addNode(simNode);
+    }
+
+    jsonFile.close();
+}
+
+void writeKMLGraph(BaseTopology_Ptr baseTopo, Config_Ptr kmlConfig, std::string outFileName) {
+    // http://www.colourlovers.com/palette/2757956/)
+    std::string pincolor = kmlConfig->get<std::string>("pins.color");
+    double pinAlpha = kmlConfig->get<double>("pins.alpha");
+    std::string edgecolor = kmlConfig->get<std::string>("edges.color");
+    double edgeAlpha = kmlConfig->get<double>("edges.alpha");
+    std::string seacablecolor = kmlConfig->get<std::string>("seacable.color");
+    double seacableAlpha = kmlConfig->get<double>("seacable.alpha");
+    std::string seacablePinColor = kmlConfig->get<std::string>("seacablepins.color");
+    double seacablePinAlpha = kmlConfig->get<double>("seacablepins.alpha");
+
+    std::unique_ptr<KMLWriter> kmlw(new KMLWriter(baseTopo));
+    kmlw->setEdgeColor(edgecolor, edgeAlpha);
+    kmlw->setPinColor(pincolor, pinAlpha);
+    kmlw->setSeacableColor(seacablecolor, seacableAlpha);
+    kmlw->setSeacablePinColor(seacablePinColor, seacablePinAlpha);
+    kmlw->createKML();
+    kmlw->write(outFileName.c_str());
+}
+
+void writeSimpleGraph(BaseTopology_Ptr baseTopo, Config_Ptr simpleGraphConfig) {
+    std::string nodeFileName = simpleGraphConfig->get<std::string>("nodeFile");
+    std::ofstream nodeFile(nodeFileName.c_str());
+    assert(nodeFile.good());
+    std::string edgeFileName = simpleGraphConfig->get<std::string>("edgeFile");
+    std::ofstream edgeFile(edgeFileName.c_str());
+    assert(edgeFile.good());
+
+    std::unique_ptr<GraphOutput> graphWriter(new GraphOutput(baseTopo, nodeFile, edgeFile));
+    graphWriter->writeNodes();
+    graphWriter->writeEdges();
+}
+
+void writeJSONGraph(BaseTopology_Ptr baseTopo, Config_Ptr config, std::string jsonFileNameCLI) {
+    std::unique_ptr<JSONOutput> jsonWriter(new JSONOutput(baseTopo));
+    jsonWriter->createJSON();
+
+    Config_Ptr jsonGraphConfig(config->subConfig("json_graph_output"));
+
+    std::string jsonFileNameConfig = jsonGraphConfig->get<std::string>("filename");
+
+    // json command line arg has precedence over json config parameter
+    std::string jsonFileName;
+
+    if (jsonFileNameCLI.length() > 0) {
+        jsonFileName = jsonFileNameCLI;
+    } else {
+        jsonFileName = jsonFileNameConfig;
+    }
+
+    if (jsonGraphConfig->get<bool>("pretty_print")) {
+        jsonWriter->writePretty(jsonFileName.c_str());
+    } else {
+        jsonWriter->write(jsonFileName.c_str());
+    }
+}
+
 int main(int argc, char** argv) {
-    std::unique_ptr<Config> config(new Config);
-    std::unique_ptr<CMDArgs> args(new CMDArgs(argc, argv));
-    std::unique_ptr<NodeImporter> nodeImport(new NodeImporter);
+    auto config = std::make_shared<Config>();
+    auto args = std::make_shared<CMDArgs>(argc, argv);
+    auto nodeImport = std::make_shared<NodeImporter>();
 
     /*
       READ CITY POSITIONS ON EARTH SURFACE
@@ -122,35 +201,18 @@ int main(int argc, char** argv) {
 
     Config_Ptr kmlConfig(config->subConfig("kml_graph_output"));
 
-    // http://www.colourlovers.com/palette/2757956/)
-    std::string pincolor = kmlConfig->get<std::string>("pins.color");
-    double pinAlpha = kmlConfig->get<double>("pins.alpha");
-    std::string edgecolor = kmlConfig->get<std::string>("edges.color");
-    double edgeAlpha = kmlConfig->get<double>("edges.alpha");
-    std::string seacablecolor = kmlConfig->get<std::string>("seacable.color");
-    double seacableAlpha = kmlConfig->get<double>("seacable.alpha");
-    std::string seacablePinColor = kmlConfig->get<std::string>("seacablepins.color");
-    double seacablePinAlpha = kmlConfig->get<double>("seacablepins.alpha");
     std::string delaunayFile = kmlConfig->get<std::string>("delaunayFile");
     std::string gabrielFile = kmlConfig->get<std::string>("gabrielFile");
 
     //  KML OUTPUT DELAUNAY
+    BaseTopology_Ptr baseTopo = delGen->getTopology();
 
-    if (args->kmlOutputEnabled()) {
-        std::unique_ptr<KMLWriter> kmlw(new KMLWriter(delGen->getTopology()));
-        kmlw->setEdgeColor(edgecolor, edgeAlpha);
-        kmlw->setPinColor(pincolor, pinAlpha);
-        kmlw->setSeacableColor(seacablecolor, seacableAlpha);
-        kmlw->setSeacablePinColor(seacablePinColor, seacablePinAlpha);
-        kmlw->createKML();
-        kmlw->write(delaunayFile.c_str());
-    }
+    if (args->kmlOutputEnabled())
+        writeKMLGraph(baseTopo, kmlConfig, delaunayFile);
 
     /*
       CREATE BETA SKELETON FROM DELAUNAY TRIANGULATION
     */
-
-    BaseTopology_Ptr baseTopo = delGen->getTopology();
     std::unique_ptr<BetaSkeletonFilter> betaGraph(new BetaSkeletonFilter(baseTopo));
     betaGraph->filterBetaSkeletonEdges();
 
@@ -166,7 +228,6 @@ int main(int argc, char** argv) {
     /*
      IMPORT SUBMARINE CABLES
     */
-
     // debug
     std::vector<std::pair<double, double>> degNodesExclSubmarine = baseTopo->getHighestDegreeNodes(2, false);
     std::vector<std::pair<double, double>> degNodesExclSubmarineUSonly = baseTopo->getHighestDegreeNodes(2, true);
@@ -177,94 +238,34 @@ int main(int argc, char** argv) {
     baseTopo->prune();
 
     /*
-      KML OUTPUT BETA SKELETON
-    */
-
-    if (args->kmlOutputEnabled()) {
-        std::unique_ptr<KMLWriter> kmlw(new KMLWriter(baseTopo));
-        kmlw->setEdgeColor(edgecolor, edgeAlpha);
-        kmlw->setPinColor(pincolor, pinAlpha);
-        kmlw->setSeacableColor(seacablecolor, seacableAlpha);
-        kmlw->setSeacablePinColor(seacablePinColor, seacablePinAlpha);
-        kmlw->createKML();
-        kmlw->write(gabrielFile.c_str());
-    }
-
-    /*
-      GRAPH OUTPUT
-    */
-
-    if (args->graphOutputEnabled()) {
-        Config_Ptr simpleGraphConfig(config->subConfig("simple_graph_output"));
-
-        // write out nodes
-        std::string nodeFileName = simpleGraphConfig->get<std::string>("nodeFile");
-        std::ofstream nodeFile(nodeFileName.c_str());
-        assert(nodeFile.good());
-        std::string edgeFileName = simpleGraphConfig->get<std::string>("edgeFile");
-        std::ofstream edgeFile(edgeFileName.c_str());
-        assert(edgeFile.good());
-
-        std::unique_ptr<GraphOutput> graphWriter(new GraphOutput(baseTopo, nodeFile, edgeFile));
-        graphWriter->writeNodes();
-        graphWriter->writeEdges();
-    }
-
-    /*
       DEAL WITH SIMULATION NODES
     */
     // create simulation topology
     SimulationTopology_Ptr simTopo(new SimulationTopology(baseTopo));
 
-    if (args->simNodesJSONFile().length() > 0) {
-        // read nodes from json file
-        std::string filePath = args->simNodesJSONFile();
-        std::ifstream jsonFile(filePath.c_str(), std::ifstream::binary);
-        Json::Reader jsonReader;
-        Json::Value root;
-        bool parsed = jsonReader.parse(jsonFile, root);
-        // check if parsing was successfull
-        assert(parsed == true);
+    if (args->simNodesJSONFile().length() > 0)
+        addSimulationNodes(simTopo, args->simNodesJSONFile());
 
-        // insert each node
-        const Json::Value nodes = root["nodes"];
-        for (int i = 0; i < static_cast<int>(nodes.size()); ++i) {
-            Json::Value node = nodes[i];
-            SimulationNode_Ptr simNode(
-                new SimulationNode(node["id"].asInt(), node["latitude"].asDouble(), node["longitude"].asDouble()));
-            simTopo->addNode(simNode);
-        }
+    /*
+      KML OUTPUT BETA SKELETON
+    */
+    if (args->kmlOutputEnabled())
+        writeKMLGraph(baseTopo, kmlConfig, gabrielFile);
 
-        jsonFile.close();
+    /*
+      GRAPH OUTPUT
+    */
+    if (args->graphOutputEnabled()) {
+        Config_Ptr simpleGraphConfig(config->subConfig("simple_graph_output"));
+        writeSimpleGraph(baseTopo, simpleGraphConfig);
     }
 
     /*
       GRAPH OUTPUT (JSON)
     */
     if (args->jsonOutputEnabled()) {
-        std::unique_ptr<JSONOutput> jsonWriter(new JSONOutput(baseTopo));
-        jsonWriter->createJSON();
-
         std::string jsonFileNameCLI = args->jsonOutputFile();
-
-        Config_Ptr jsonGraphConfig(config->subConfig("json_graph_output"));
-
-        std::string jsonFileNameConfig = jsonGraphConfig->get<std::string>("filename");
-
-        // json command line arg has precedence over json config parameter
-        std::string jsonFileName;
-
-        if (jsonFileNameCLI.length() > 0) {
-            jsonFileName = jsonFileNameCLI;
-        } else {
-            jsonFileName = jsonFileNameConfig;
-        }
-
-        if (jsonGraphConfig->get<bool>("pretty_print")) {
-            jsonWriter->writePretty(jsonFileName.c_str());
-        } else {
-            jsonWriter->write(jsonFileName.c_str());
-        }
+        writeJSONGraph(baseTopo, config, jsonFileNameCLI);
     }
 
     return EXIT_SUCCESS;

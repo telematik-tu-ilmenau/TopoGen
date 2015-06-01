@@ -263,10 +263,8 @@ int main(int argc, char** argv) {
     /*
       GRAPH OUTPUT (JSON)
     */
-    if (args->jsonOutputEnabled()) {
-        std::string jsonFileNameCLI = args->jsonOutputFile();
-        writeJSONGraph(baseTopo, config, jsonFileNameCLI);
-    }
+    if (args->jsonOutputEnabled())
+        writeJSONGraph(baseTopo, config, args->jsonOutputFile());
 
     return EXIT_SUCCESS;
 }

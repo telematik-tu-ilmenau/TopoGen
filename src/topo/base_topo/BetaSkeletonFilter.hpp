@@ -40,15 +40,6 @@
 #include <map>
 #include <utility>
 
-struct BetaFilterTask {
-    BetaFilterTask() {}
-    BetaFilterTask(Graph::Node n1, Graph::Node n2, double beta) : n1(n1), n2(n2), beta(beta) {}
-
-    Graph::Node n1;
-    Graph::Node n2;
-    double beta;
-};
-
 class BetaSkeletonFilter {
    public:
     BetaSkeletonFilter(BaseTopology_Ptr baseTopo);
@@ -73,9 +64,6 @@ class BetaSkeletonFilter {
     BaseTopology_Ptr _baseTopo;
     Graph_Ptr _graph;
     NodeMap_Ptr _nodeGeoNodeMap;
-
-    std::shared_ptr<ConcurrentQueue<BetaFilterTask>> _workItems;
-    std::mutex _graphMtx;
 };
 
 #endif  // BETASKELETONFILTER_HPP

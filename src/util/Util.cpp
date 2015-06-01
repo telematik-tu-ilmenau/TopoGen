@@ -28,16 +28,7 @@
  */
 
 #include "Util.hpp"
-#include <unistd.h>
 #include <cmath>
-#include <unistd.h>
-#include <cassert>
-#include <fcntl.h>
-
-int Util::getNumberOfCores(void) {
-    // return sysconf(_SC_NPROCESSORS_ONLN);
-    return 1;
-}
 
 double Util::hs(double theta) {
     double t = sin(theta / 2.0);
@@ -48,15 +39,3 @@ double Util::ihs(double theta) {
     return 2.0 * asin(sqrt(theta));
 }
 
-long Util::urandom() {
-    int fd = open("/dev/urandom", O_RDONLY);
-    assert(fd);
-
-    long ret;
-    int readBytes = read(fd, &ret, sizeof(ret));
-    assert(readBytes == sizeof(ret));
-
-    close(fd);
-
-    return ret;
-}

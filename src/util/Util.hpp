@@ -31,10 +31,8 @@
 #define UTIL_HPP
 
 namespace Util {
-int getNumberOfCores(void);
 double hs(double theta);
 double ihs(double theta);
-long urandom(void);
 };
 
 #endif

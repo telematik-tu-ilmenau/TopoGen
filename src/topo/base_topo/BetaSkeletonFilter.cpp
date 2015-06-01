@@ -28,8 +28,9 @@
  */
 
 #include "BetaSkeletonFilter.hpp"
-#include "config/PredefinedValues.hpp"
+
 #include "config/Config.hpp"
+#include "config/PredefinedValues.hpp"
 #include "db/InternetUsageStatistics.hpp"
 #include "geo/CityNode.hpp"
 #include "geo/GeographicNode.hpp"
@@ -39,15 +40,12 @@
 #include "util/Util.hpp"
 #include <cassert>
 #include <cmath>
-#include <condition_variable>
 #include <cstdlib>
-#include <future>
 #include <iostream>
 #include <lemon/bfs.h>
 #include <lemon/core.h>
 #include <list>
 #include <set>
-#include <thread>
 
 using GeometricHelpers::deg2rad;
 using GeometricHelpers::rad2deg;
@@ -56,8 +54,7 @@ using GeometricHelpers::sphericalDist;
 BetaSkeletonFilter::BetaSkeletonFilter(BaseTopology_Ptr baseTopo)
     : _baseTopo(baseTopo),
       _graph(_baseTopo->getGraph()),
-      _nodeGeoNodeMap(_baseTopo->getNodeMap()),
-      _workItems(new ConcurrentQueue<BetaFilterTask>) {
+      _nodeGeoNodeMap(_baseTopo->getNodeMap()) {
 }
 
 BetaSkeletonFilter::~BetaSkeletonFilter() {
@@ -67,69 +64,12 @@ void BetaSkeletonFilter::generalGabrielFilter() {
     using namespace lemon;
     typedef std::list<Graph::Edge> Edgelist;
     Edgelist edges_to_delete;
-    std::mutex edgesDeleteMtx;
-    std::list<std::pair<Graph::Node, Graph::Node>> edges_to_add;
-    std::mutex edgesAddMtx;
 
-    std::vector<std::thread> threads;
-
-    BetaFilterTask task;
-
-    auto addTask = [this, &task](Graph::Node& n1, Graph::Node& n2) {
-        task.n1 = n1;
-        task.n2 = n2;
-        task.beta = 1.0;
-        _workItems->push(std::move(task));
-    };
-
-    // create gabriel graph
-
-    // fill work queue
     for (Graph::EdgeIt edge(*_graph); edge != lemon::INVALID; ++edge) {
-        Graph::Node n1 = _graph->u(edge);
-        Graph::Node n2 = _graph->v(edge);
-        assert(n1 != n2);
-        addTask(n1, n2);
+        if (edge != INVALID && !isBetaSkeletonEdgeGreaterEqualThanOne(edge, 1.0))
+            edges_to_delete.push_back(edge);
     }
 
-    auto deleteEdge = [this, &edgesDeleteMtx, &edges_to_delete](Graph::Edge& edge) {
-        edgesDeleteMtx.lock();
-        edges_to_delete.push_back(edge);
-        edgesDeleteMtx.unlock();
-    };
-
-    auto addEdge = [this, &edgesAddMtx, &edges_to_add](Graph::Node& n1, Graph::Node& n2) {
-        edgesAddMtx.lock();
-        edges_to_add.push_back(std::make_pair(n1, n2));
-        edgesAddMtx.unlock();
-    };
-
-    // run
-    for (int i = 0; i < Util::getNumberOfCores(); ++i) {
-        threads.push_back(std::thread([this, &deleteEdge, &addEdge](void) {
-            while (!_workItems->empty()) {
-                BetaFilterTask task;
-                bool popSucessfull = this->_workItems->try_pop(task);
-                if (!popSucessfull)
-                    break;
-
-                Graph::Edge edge = findEdge(*(this->_graph), task.n1, task.n2);
-                if (edge != INVALID && !isBetaSkeletonEdgeGreaterEqualThanOne(edge, task.beta))
-                    deleteEdge(edge);
-            }
-        }));
-    }
-
-    // join
-    for (auto& thread : threads) {
-        thread.join();
-    }
-
-    // add edges
-    for (auto pair : edges_to_add)
-        _graph->addEdge(pair.first, pair.second);
-
-    // erase edges
     for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         _graph->erase(*edge);
 }
@@ -153,11 +93,7 @@ void BetaSkeletonFilter::perCountryBetaFilter() {
     // create work items
     typedef std::list<Graph::Edge> Edgelist;
     Edgelist edges_to_delete;
-    std::mutex edgesDeleteMtx;
     std::list<std::pair<Graph::Node, Graph::Node>> edges_to_add;
-    std::mutex edgesAddMtx;
-    std::vector<std::thread> threads;
-    BetaFilterTask task;
 
     std::unique_ptr<Config> config(new Config);
     double minBeta = config->get<double>("betaSkeleton.minBeta");
@@ -165,13 +101,6 @@ void BetaSkeletonFilter::perCountryBetaFilter() {
     double maxBeta = config->get<double>("betaSkeleton.maxBeta");
     assert(maxBeta > 0.0);
     assert(maxBeta < 2.0);
-
-    auto addTask = [this, &task](Graph::Node& n1, Graph::Node& n2, double beta) {
-        task.n1 = n1;
-        task.n2 = n2;
-        task.beta = beta;
-        _workItems->push(std::move(task));
-    };
 
     std::unique_ptr<InternetUsageStatistics> stat(new InternetUsageStatistics(PredefinedValues::dbFilePath()));
 
@@ -186,49 +115,18 @@ void BetaSkeletonFilter::perCountryBetaFilter() {
                 if (nd1.second == nd2.second || nd1.second->id() > nd2.second->id())
                     continue;
 
-                addTask(nd1.first, nd2.first, beta);
-            }
-    }
-
-    auto deleteEdge = [this, &edgesDeleteMtx, &edges_to_delete](Graph::Edge& edge) {
-        edgesDeleteMtx.lock();
-        edges_to_delete.push_back(edge);
-        edgesDeleteMtx.unlock();
-    };
-
-    auto addEdge = [this, &edgesAddMtx, &edges_to_add](Graph::Node& n1, Graph::Node& n2) {
-        edgesAddMtx.lock();
-        edges_to_add.push_back(std::make_pair(n1, n2));
-        edgesAddMtx.unlock();
-    };
-
-    // run
-    for (int i = 0; i < Util::getNumberOfCores(); ++i) {
-        threads.push_back(std::thread([this, &deleteEdge, &addEdge](void) {
-            while (!_workItems->empty()) {
-                BetaFilterTask task;
-                bool popSucessfull = this->_workItems->try_pop(task);
-                if (!popSucessfull)
-                    break;
-
-                if (task.beta >= 1.0) {
-                    Graph::Edge edge = findEdge(*(this->_graph), task.n1, task.n2);
-                    if (edge != INVALID && !isBetaSkeletonEdgeGreaterEqualThanOne(edge, task.beta))
-                        deleteEdge(edge);
-                } else if (isBetaSkeletonEdgeSmallerThanOne(task.n1, task.n2, task.beta))
-                    addEdge(task.n1, task.n2);
+                if (beta >= 1.0) {
+                    Graph::Edge edge = findEdge(*_graph, nd1.first, nd2.first);
+                    if (edge != INVALID && !isBetaSkeletonEdgeGreaterEqualThanOne(edge, beta))
+                        edges_to_delete.push_back(edge);
+                } else if (isBetaSkeletonEdgeSmallerThanOne(nd1.first, nd2.first, beta))
+                    edges_to_add.push_back(std::make_pair(nd1.first, nd2.first));
                 else {
-                    Graph::Edge edge = findEdge(*(this->_graph), task.n1, task.n2);
+                    Graph::Edge edge = findEdge(*_graph, nd1.first, nd2.first);
                     if (edge != INVALID)
-                        deleteEdge(edge);
+                        edges_to_delete.push_back(edge);
                 }
             }
-        }));
-    }
-
-    // join
-    for (auto& thread : threads) {
-        thread.join();
     }
 
     // add edges
@@ -345,6 +243,7 @@ bool BetaSkeletonFilter::testTheta(GeographicNode_Ptr& p, GeographicNode_Ptr& r,
     double b = sphericalDist(q, r);
     double c = sphericalDist(p, q);
     double C = Util::ihs((Util::hs(c) - Util::hs(a - b)) / (sin(a) * sin(b)));
+
     if (C >= theta)
         return false;
     else

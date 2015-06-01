@@ -54,6 +54,8 @@ class Config {
     std::pair<Json::Value, std::string> getSubNode(std::string propertyName);
     std::vector<std::string> splitPropertyNameBy(std::string propertyName, char delimiter = '.');
 
+    Json::Value getSubValue(std::string propertyName);
+
    private:
     Json::Value _config;
 };

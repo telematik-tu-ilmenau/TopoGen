@@ -55,44 +55,36 @@ Config_Ptr Config::subConfig(std::string propertyName) {
 Config::Config(Json::Value node) : _config(node) {
 }
 
-template <>
-std::string Config::get<std::string>(std::string propertyName) {
+Json::Value Config::getSubValue(std::string propertyName) {
     std::pair<Json::Value, std::string> node = getSubNode(propertyName);
     Json::Value& nd = node.first;
     std::string& key = node.second;
-    return nd[key].asString();
+    return nd[key];
+}
+
+template <>
+std::string Config::get<std::string>(std::string propertyName) {
+    return getSubValue(propertyName).asString();
 }
 
 template <>
 double Config::get<double>(std::string propertyName) {
-    std::pair<Json::Value, std::string> node = getSubNode(propertyName);
-    Json::Value& nd = node.first;
-    std::string& key = node.second;
-    return nd[key].asDouble();
+    return getSubValue(propertyName).asDouble();
 }
 
 template <>
 int Config::get<int>(std::string propertyName) {
-    std::pair<Json::Value, std::string> node = getSubNode(propertyName);
-    Json::Value& nd = node.first;
-    std::string& key = node.second;
-    return nd[key].asInt();
+    return getSubValue(propertyName).asInt();
 }
 
 template <>
 bool Config::get<bool>(std::string propertyName) {
-    std::pair<Json::Value, std::string> node = getSubNode(propertyName);
-    Json::Value& nd = node.first;
-    std::string& key = node.second;
-    return nd[key].asBool();
+    return getSubValue(propertyName).asBool();
 }
 
 template <>
 unsigned int Config::get<unsigned int>(std::string propertyName) {
-    std::pair<Json::Value, std::string> node = getSubNode(propertyName);
-    Json::Value& nd = node.first;
-    std::string& key = node.second;
-    return static_cast<unsigned int>(nd[key].asInt());
+    return static_cast<unsigned int>(getSubValue(propertyName).asInt());
 }
 
 std::pair<Json::Value, std::string> Config::getSubNode(std::string propertyName) {

@@ -1,0 +1,61 @@
+{
+  "cityfilter" : {
+    "citysizethreshold" : 300000
+  },
+
+  "neighbourCluster" : {
+    "minPts" : 1,
+    "maxClusterDistance" : 30
+  },
+
+  "metropolisCluster" : {
+    "minPts" : 2,
+    "maxClusterDistance" : 50
+  },
+
+  "betaSkeleton" : {
+    "minBeta": 1.0,
+    "maxBeta": 1.2
+  },
+
+  "lengthFilter" : {
+    "enable": true,
+    "minLength": 600.0
+  },
+
+  "debug" : {
+    "enable" : false,
+    "inputNodePath" : ""
+  },
+
+  "simple_graph_output" : {
+    "nodeFile" : "nodes.txt",
+    "edgeFile" : "edges.txt"
+  },
+
+  "json_graph_output" : {
+    "filename" : "graph.json",
+    "pretty_print" : true
+  },
+
+  "kml_graph_output" : {
+    "pins" : {
+      "color" : "FF4F1B",
+      "alpha" : 1.0
+    },
+    "edges" : {
+      "color" : "04E792",
+      "alpha" : 1.0
+    },
+    "seacable" : {
+      "color" : "00A3E7",
+      "alpha" : 1.0
+    },
+    "seacablepins" : {
+      "color" : "80DCEA",
+      "alpha" : 1.0
+    },
+    "delaunayFile" : "cities_delaunay.kml",
+    "gabrielFile" : "cities.kml"
+  }
+}

@@ -37,6 +37,7 @@
 #include "geo/GeometricHelpers.hpp"
 #include "geo/SeaCableLandingPoint.hpp"
 #include "geo/SeaCableNode.hpp"
+#include "topo/Graph.hpp"
 #include "util/Util.hpp"
 #include <cassert>
 #include <cmath>
@@ -60,15 +61,14 @@ BetaSkeletonFilter::~BetaSkeletonFilter() {
 
 void BetaSkeletonFilter::generalGabrielFilter() {
     using namespace lemon;
-    typedef std::list<Graph::Edge> Edgelist;
-    Edgelist edges_to_delete;
+    EdgeList edges_to_delete;
 
     for (Graph::EdgeIt edge(*_graph); edge != lemon::INVALID; ++edge) {
         if (edge != INVALID && !isBetaSkeletonEdgeGreaterEqualThanOne(edge, 1.0))
             edges_to_delete.push_back(edge);
     }
 
-    for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
+    for (EdgeList::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         _graph->erase(*edge);
 }
 
@@ -89,8 +89,7 @@ void BetaSkeletonFilter::perCountryBetaFilter() {
     }
 
     // create work items
-    typedef std::list<Graph::Edge> Edgelist;
-    Edgelist edges_to_delete;
+    EdgeList edges_to_delete;
     std::list<std::pair<Graph::Node, Graph::Node>> edges_to_add;
 
     std::unique_ptr<Config> config(new Config);
@@ -132,15 +131,13 @@ void BetaSkeletonFilter::perCountryBetaFilter() {
         _graph->addEdge(pair.first, pair.second);
 
     // erase edges
-    for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
+    for (EdgeList::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         _graph->erase(*edge);
 }
 
 void BetaSkeletonFilter::filterBetaSkeletonEdges() {
     // create global gabriel graph
     generalGabrielFilter();
-
-    // -------------------------------------------------------------------------
 
     // per country filtering with beta skeleton
     perCountryBetaFilter();

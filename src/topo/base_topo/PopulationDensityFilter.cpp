@@ -38,11 +38,11 @@
 #include "geo/GeometricHelpers.hpp"
 #include "geo/GeographicPosition.hpp"
 #include "geo/SeaCableLandingPoint.hpp"
+#include "topo/Graph.hpp"
 #include "util/Util.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <lemon/list_graph.h>
 #include <numeric>
 
 PopulationDensityFilter::PopulationDensityFilter(BaseTopology_Ptr baseTopo)
@@ -62,8 +62,7 @@ void PopulationDensityFilter::filter(void) {
     // iterate over edges
     Graph& graph = *_baseTopo->getGraph();
     auto& nodeGeoNodeMap = *_baseTopo->getNodeMap();
-    typedef std::list<Graph::Edge> Edgelist;
-    Edgelist edges_to_delete;
+    EdgeList edges_to_delete;
 
     auto isValidNode = [](GeographicNode_Ptr& ptr) -> bool {
         CityNode* n1 = dynamic_cast<CityNode*>(ptr.get());
@@ -133,7 +132,7 @@ void PopulationDensityFilter::filter(void) {
 
     BOOST_LOG_TRIVIAL(info) << edges_to_delete.size() << " edges deleted by population density filter";
 
-    for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
+    for (EdgeList::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         graph.erase(*edge);
 }
 
@@ -148,8 +147,7 @@ void PopulationDensityFilter::filterByLength(void) {
     // iterate over edges
     Graph& graph = *_baseTopo->getGraph();
     auto& nodeGeoNodeMap = *_baseTopo->getNodeMap();
-    typedef std::list<Graph::Edge> Edgelist;
-    Edgelist edges_to_delete;
+    EdgeList edges_to_delete;
 
     auto isValidNode = [](GeographicNode_Ptr& ptr) -> bool {
         CityNode* n1 = dynamic_cast<CityNode*>(ptr.get());
@@ -199,6 +197,6 @@ void PopulationDensityFilter::filterByLength(void) {
         }
     }
     // erase edges
-    for (Edgelist::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
+    for (EdgeList::iterator edge = edges_to_delete.begin(); edge != edges_to_delete.end(); ++edge)
         graph.erase(*edge);
 }

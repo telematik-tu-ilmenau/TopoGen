@@ -32,8 +32,10 @@
 
 #include <lemon/list_graph.h>
 #include <memory>
+#include <list>
 
 typedef lemon::ListGraph Graph;
+typedef std::list<Graph::Edge> EdgeList;
 typedef std::shared_ptr<Graph> Graph_Ptr;
 
 #endif

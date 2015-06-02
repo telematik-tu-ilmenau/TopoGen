@@ -30,9 +30,10 @@
 #ifndef SQLITEAREAPOPULATIONREADER_HPP
 #define SQLITEAREAPOPULATIONREADER_HPP
 
+#include "SQLiteReader.hpp"
+#include "ResultIterator.hpp"
 #include "geo/CityNode.hpp"
 #include "geo/PopulatedPosition.hpp"
-#include "LocationReader.hpp"
 #include <sqlite3.h>
 #include <string>
 
@@ -41,23 +42,19 @@ typedef std::shared_ptr<SQLiteAreaPopulationReader> SQLiteAreaPopulationReader_P
 
 // http://www.sqlite.org/c3ref/funclist.html
 
-class SQLiteAreaPopulationReader {
+class SQLiteAreaPopulationReader : public SQLiteReader, public ResultIterator<PopulatedPosition> {
    public:
     // latitude and longitude of midpoint!
     SQLiteAreaPopulationReader(std::string dbPath, double lat, double lon, double length);
 
-    bool hasNext();
     PopulatedPosition getNext();
 
-    ~SQLiteAreaPopulationReader();
+    virtual ~SQLiteAreaPopulationReader();
 
    private:
-    sqlite3* _ppDB;
-    sqlite3_stmt* _stmt;
     double _lat;
     double _lon;
     double _length;
-    bool _rowAvailable;
 };
 
 #endif

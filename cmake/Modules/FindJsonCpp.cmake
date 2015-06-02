@@ -15,7 +15,12 @@ PKG_CHECK_MODULES(PC_JSONCPP jsoncpp)
 SET(JSONCPP_DEFINITIONS ${PC_JSONCPP_CFLAGS_OTHER})
 
 FIND_PATH(JSONCPP_INCLUDE_DIR json/reader.h
-  HINTS ${PC_JSONCPP_INCLUDE_DIR} ${PC_JSONCPP_INCLUDE_DIRS}
+  HINTS
+    ${PC_JSONCPP_INCLUDE_DIR}
+    ${PC_JSONCPP_INCLUDE_DIRS}
+  PATHS
+    /usr/include
+    /usr/local/include
   PATH_SUFFIXES jsoncpp)
 
 # Get the GCC compiler version
@@ -27,7 +32,10 @@ EXEC_PROGRAM(${CMAKE_CXX_COMPILER}
 
 # Try to find a library that was compiled with the same compiler version as we currently use.
 FIND_LIBRARY(JSONCPP_LIBRARY
-  NAMES libjson_linux-gcc-${_gcc_COMPILER_VERSION}_libmt.so libjsoncpp.so
+  NAMES
+    libjson_linux-gcc-${_gcc_COMPILER_VERSION}_libmt.so
+    libjsoncpp.so
+    libjsoncpp.dylib
   HINTS ${PC_JSONCPP_LIBDIR} ${PC_JSONCPP_LIBRARY_DIRS}
   PATHS /usr/lib /usr/local/lib)
 

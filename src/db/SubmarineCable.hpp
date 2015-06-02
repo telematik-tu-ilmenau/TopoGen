@@ -30,7 +30,8 @@
 #ifndef SUBMARINECABLE_HPP
 #define SUBMARINECABLE_HPP
 
-#include <sqlite3.h>
+#include "SQLiteReader.hpp"
+#include "ResultIterator.hpp"
 #include <string>
 
 struct SubmarineCableEdge {
@@ -38,18 +39,11 @@ struct SubmarineCableEdge {
     std::pair<double, double> coord2;
 };
 
-class SubmarineCable {
+class SubmarineCable : public SQLiteReader, public ResultIterator<SubmarineCableEdge> {
    public:
     SubmarineCable(std::string dbPath);
-    bool hasNext();
     SubmarineCableEdge getNext();
-    ~SubmarineCable();
-
-   private:
-    // add submarine cable edges
-    sqlite3* _ppDB;
-    sqlite3_stmt* _stmt;
-    bool _rowAvailable;
+    virtual ~SubmarineCable();
 };
 
 #endif

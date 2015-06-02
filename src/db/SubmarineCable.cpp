@@ -32,7 +32,7 @@
 #include <boost/log/trivial.hpp>
 
 SubmarineCable::SubmarineCable(std::string dbPath) {
-    int retval = sqlite3_open(dbPath.c_str(), &_ppDB);
+    int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
@@ -40,17 +40,13 @@ SubmarineCable::SubmarineCable(std::string dbPath) {
     }
 
     std::string queryString = "SELECT lat1, lon1, lat2, lon2 FROM submarinecable_edges";
-    sqlite3_prepare_v2(_ppDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
+    sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
 
     retval = sqlite3_step(_stmt);
     if (retval == SQLITE_ROW)
         _rowAvailable = true;
     else
         _rowAvailable = false;
-}
-
-bool SubmarineCable::hasNext() {
-    return _rowAvailable;
 }
 
 SubmarineCableEdge SubmarineCable::getNext() {
@@ -74,5 +70,5 @@ SubmarineCableEdge SubmarineCable::getNext() {
 
 SubmarineCable::~SubmarineCable() {
     sqlite3_finalize(_stmt);
-    sqlite3_close(_ppDB);
+    sqlite3_close(_sqliteDB);
 }

@@ -32,6 +32,8 @@
 
 #include <boost/program_options.hpp>
 #include <string>
+#include <memory>
+
 namespace po = boost::program_options;
 
 class CMDArgs {
@@ -61,5 +63,7 @@ class CMDArgs {
     std::string simNodesJSONPath;
     std::string jsonOutFile;
 };
+
+typedef std::shared_ptr<CMDArgs> CMDArgs_Ptr;
 
 #endif

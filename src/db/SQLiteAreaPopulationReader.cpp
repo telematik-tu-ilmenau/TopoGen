@@ -35,7 +35,7 @@
 
 SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, double lat, double lon, double length)
     : _lat(lat), _lon(lon), _length(length) {
-    int retval = sqlite3_open(dbPath.c_str(), &_ppDB);
+    int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
@@ -57,7 +57,7 @@ SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, doubl
         "   AND geo.country_code = ci.iso"
         " ORDER BY Population DESC");
 
-    sqlite3_prepare_v2(_ppDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
+    sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
     sqlite3_bind_double(_stmt, 1, _lat - (length / 2));
     sqlite3_bind_double(_stmt, 2, _lat + (length / 2));
     sqlite3_bind_double(_stmt, 3, _lon - (length / 2));
@@ -69,10 +69,6 @@ SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, doubl
     } else {
         _rowAvailable = false;
     }
-}
-
-bool SQLiteAreaPopulationReader::hasNext() {
-    return _rowAvailable;
 }
 
 PopulatedPosition SQLiteAreaPopulationReader::getNext() {
@@ -95,5 +91,5 @@ PopulatedPosition SQLiteAreaPopulationReader::getNext() {
 
 SQLiteAreaPopulationReader::~SQLiteAreaPopulationReader() {
     sqlite3_finalize(_stmt);
-    sqlite3_close(_ppDB);
+    sqlite3_close(_sqliteDB);
 }

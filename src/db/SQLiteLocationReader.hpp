@@ -30,27 +30,25 @@
 #ifndef SQLITELOCATIONREADER_HPP
 #define SQLITELOCATIONREADER_HPP
 
+
 #include "geo/CityNode.hpp"
-#include "LocationReader.hpp"
+#include "SQLiteReader.hpp"
+#include "ResultIterator.hpp"
 #include <sqlite3.h>
 #include <string>
 
 // http://www.sqlite.org/c3ref/funclist.html
 
-class SQLiteLocationReader : public LocationReader {
+class SQLiteLocationReader : public SQLiteReader, public ResultIterator<CityNode> {
    public:
     SQLiteLocationReader(std::string dbPath, int populationThreshold);
 
-    bool hasNext();
     CityNode getNext();
 
-    ~SQLiteLocationReader();
+    virtual ~SQLiteLocationReader();
 
    private:
-    sqlite3* _ppDB;
-    sqlite3_stmt* _stmt;
     int _populationThreshold;
-    bool _rowAvailable;
 };
 
 #endif

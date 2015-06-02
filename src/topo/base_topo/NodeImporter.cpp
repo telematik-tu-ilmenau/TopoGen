@@ -97,7 +97,7 @@ void NodeImporter::importCities(const std::string& seedString) {
     Config_Ptr cityFilterConfig(config->subConfig("cityfilter"));
     int populationThreshold = cityFilterConfig->get<int>("citysizethreshold");
 
-    std::unique_ptr<LocationReader> lr(new SQLiteLocationReader(_dbFilename, populationThreshold));
+    auto lr = std::make_shared<SQLiteLocationReader>(_dbFilename, populationThreshold);
 
     typedef std::map<std::string, std::vector<CityNode>> CountryMap;
     std::unique_ptr<CountryMap> countries(new CountryMap);

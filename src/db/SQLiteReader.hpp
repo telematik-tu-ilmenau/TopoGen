@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015, Michael Grey and Markus Theil
+ * Copyright (c) 2015, Michael Grey and Markus Theil
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,19 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LOCALTIONREADER_HPP
-#define LOCALTIONREADER_HPP
+#ifndef SQLITEREADER_HPP
+#define SQLITEREADER_HPP
 
-class CityNode;
+#include <sqlite3.h>
 
-class LocationReader {
-   public:
-    virtual bool hasNext() = 0;
-    virtual CityNode getNext() = 0;
-    virtual ~LocationReader() {}
+class SQLiteReader {
+public:
+    virtual ~SQLiteReader() {}
+protected:
+    sqlite3* _sqliteDB;
+    sqlite3_stmt* _stmt;
+private:
 };
 
-#endif  // LOCALTIONREADER_HPP
+#endif // SQLITEREADER_HPP
+

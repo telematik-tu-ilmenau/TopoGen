@@ -35,7 +35,7 @@
 
 SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThreshold)
     : _populationThreshold(populationThreshold) {
-    int retval = sqlite3_open(dbPath.c_str(), &_ppDB);
+    int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
@@ -55,17 +55,13 @@ SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThr
         "   AND geo.country_code = ci.iso"
         " ORDER BY Name");
 
-    sqlite3_prepare_v2(_ppDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
+    sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
     sqlite3_bind_int(_stmt, 1, _populationThreshold);
     retval = sqlite3_step(_stmt);
     if (retval == SQLITE_ROW)
         _rowAvailable = true;
     else
         _rowAvailable = false;
-}
-
-bool SQLiteLocationReader::hasNext() {
-    return _rowAvailable;
 }
 
 CityNode SQLiteLocationReader::getNext() {
@@ -100,5 +96,5 @@ CityNode SQLiteLocationReader::getNext() {
 
 SQLiteLocationReader::~SQLiteLocationReader() {
     sqlite3_finalize(_stmt);
-    sqlite3_close(_ppDB);
+    sqlite3_close(_sqliteDB);
 }

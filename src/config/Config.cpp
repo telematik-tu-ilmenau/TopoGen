@@ -46,10 +46,7 @@ Config::Config(std::string fileName) {
 }
 
 Config_Ptr Config::subConfig(std::string propertyName) {
-    std::pair<Json::Value, std::string> node = getSubNode(propertyName);
-    Json::Value& nd = node.first;
-    std::string& key = node.second;
-    return Config_Ptr(new Config(nd[key]));
+    return Config_Ptr(new Config(getSubValue(propertyName)));
 }
 
 Config::Config(Json::Value node) : _config(node) {

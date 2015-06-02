@@ -30,21 +30,19 @@
 #ifndef LANDINGPOINTREADER_HPP
 #define LANDINGPOINTREADER_HPP
 
+#include "SQLiteReader.hpp"
+#include "ResultIterator.hpp"
 #include <sqlite3.h>
 #include <string>
 #include "geo/SeaCableLandingPoint.hpp"
 
-class LandingPointReader {
+class LandingPointReader : public SQLiteReader, public ResultIterator<SeaCableLandingPoint> {
    public:
     LandingPointReader(std::string dbName);
-    bool hasNext();
     SeaCableLandingPoint getNext();
-    ~LandingPointReader();
+    virtual ~LandingPointReader();
 
    private:
-    sqlite3* _ppDB;
-    sqlite3_stmt* _stmt;
-    bool _rowAvailable;
 
     std::string getContinentLandingPoint(std::string name);
 };

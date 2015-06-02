@@ -33,7 +33,7 @@
 #include <boost/log/trivial.hpp>
 
 LandingPointReader::LandingPointReader(std::string dbName) {
-    int retval = sqlite3_open(dbName.c_str(), &_ppDB);
+    int retval = sqlite3_open(dbName.c_str(), &_sqliteDB);
 
     // If connection failed, handle returns NULL
     if (retval) {
@@ -43,17 +43,13 @@ LandingPointReader::LandingPointReader(std::string dbName) {
 
     std::string queryString("SELECT id, latitude, longitude, name, country from landingpoints");
 
-    sqlite3_prepare_v2(_ppDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
+    sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
     retval = sqlite3_step(_stmt);
     _rowAvailable = false;
     if (retval == SQLITE_ROW)
         _rowAvailable = true;
     else
         _rowAvailable = false;
-}
-
-bool LandingPointReader::hasNext() {
-    return _rowAvailable;
 }
 
 SeaCableLandingPoint LandingPointReader::getNext() {
@@ -81,7 +77,7 @@ std::string LandingPointReader::getContinentLandingPoint(std::string name) {
         "SELECT continent from countryinfo as ci, rel_landingpoint_to_countryinfo as lp where lp.country_landing = ? "
         "AND lp.country_countryinfo = ci.country";
 
-    sqlite3_prepare_v2(_ppDB, queryString.c_str(), queryString.length(), &stmt, NULL);
+    sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &stmt, NULL);
 
     assert(sqlite3_bind_text(stmt, 1, name.c_str(), name.size(), NULL) == SQLITE_OK);
     int retval = sqlite3_step(stmt);
@@ -96,5 +92,5 @@ std::string LandingPointReader::getContinentLandingPoint(std::string name) {
 
 LandingPointReader::~LandingPointReader() {
     sqlite3_finalize(_stmt);
-    sqlite3_close(_ppDB);
+    sqlite3_close(_sqliteDB);
 }

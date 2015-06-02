@@ -30,20 +30,18 @@
 #ifndef INTERNETUSAGESTATISTICS_HPP
 #define INTERNETUSAGESTATISTICS_HPP
 
-#include <sqlite3.h>
+#include "SQLiteReader.hpp"
 #include <string>
 
-class InternetUsageStatistics {
+class InternetUsageStatistics : public SQLiteReader {
    public:
     InternetUsageStatistics(std::string dbPath);
 
     double operator[](std::string& countryName);
 
-    ~InternetUsageStatistics();
+    virtual ~InternetUsageStatistics();
 
    private:
-    sqlite3* _statDB;
-    sqlite3_stmt* _stmt;
 };
 
 #endif

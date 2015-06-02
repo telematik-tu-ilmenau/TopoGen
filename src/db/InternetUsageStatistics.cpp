@@ -34,7 +34,7 @@
 #include <boost/log/trivial.hpp>
 
 InternetUsageStatistics::InternetUsageStatistics(std::string dbPath) {
-    int retval = sqlite3_open(dbPath.c_str(), &_statDB);
+    int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);
 
     // If connection failed, handle returns NULL
     if (retval != SQLITE_OK) {
@@ -51,7 +51,7 @@ InternetUsageStatistics::InternetUsageStatistics(std::string dbPath) {
         " GROUP BY un.country_or_area"
         " HAVING max(year)");
 
-    assert(sqlite3_prepare_v2(_statDB, queryString.c_str(), queryString.size(), &_stmt, NULL) == SQLITE_OK);
+    assert(sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.size(), &_stmt, NULL) == SQLITE_OK);
 }
 
 // returns percent of population with Internet access in this country
@@ -68,5 +68,5 @@ double InternetUsageStatistics::operator[](std::string& countryName) {
 
 InternetUsageStatistics::~InternetUsageStatistics() {
     sqlite3_finalize(_stmt);
-    sqlite3_close(_statDB);
+    sqlite3_close(_sqliteDB);
 }

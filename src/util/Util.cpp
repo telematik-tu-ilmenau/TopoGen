@@ -30,6 +30,7 @@
 #include "Util.hpp"
 #include <cmath>
 #include <cassert>
+#include "geo/GeographicPosition.hpp"
 
 double Util::hs(double theta) {
     double t = sin(theta / 2.0);
@@ -47,6 +48,6 @@ bool Util::checkBounds(double lat, double lon){
     return latOk && lonOk;
 }
 
-bool Util::checkBounds(Position& p){
-    return checkBounds(p.lat, p.lon);
+bool Util::checkBounds(GeographicPosition& p){
+    return checkBounds(p.lat(), p.lon());
 }

@@ -41,42 +41,38 @@ static const double DEG_TO_RAD = 0.017453292519943295769236907684886;
 
 // http://blog.julien.cayzac.name/2008/10/arc-and-distance-between-two-points-on.html
 // use the law of haversines for numerical stability
-double GeometricHelpers::sphericalDist(Position& from, Position& to) {
-    double latitudeArc = (from.lat - to.lat) * DEG_TO_RAD;
-    double longitudeArc = (from.lon - to.lon) * DEG_TO_RAD;
+double GeometricHelpers::sphericalDist(GeographicPosition& from, GeographicPosition& to) {
+    double latitudeArc = (from.lat() - to.lat()) * DEG_TO_RAD;
+    double longitudeArc = (from.lon() - to.lon()) * DEG_TO_RAD;
     double latitudeH = sin(latitudeArc * 0.5);
     latitudeH *= latitudeH;
     double lontitudeH = sin(longitudeArc * 0.5);
     lontitudeH *= lontitudeH;
-    double tmp = cos(from.lat * DEG_TO_RAD) * cos(to.lat * DEG_TO_RAD);
+    double tmp = cos(from.lat() * DEG_TO_RAD) * cos(to.lat() * DEG_TO_RAD);
     return 2.0 * asin(sqrt(latitudeH + tmp * lontitudeH));
 }
 
 double GeometricHelpers::sphericalDist(GeographicNode_Ptr& from, GeographicNode_Ptr& to) {
-    Position p1;
-    p1.lat = from->lat();
-    p1.lon = from->lon();
-    Position p2;
-    p2.lat = to->lat();
-    p2.lon = to->lon();
+    GeographicPosition p1(from->lat(), from->lon());
+    GeographicPosition p2(to->lat(), to->lon());
     return GeometricHelpers::sphericalDist(p1, p2);
 }
 
 GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(GeographicNode_Ptr& from, GeographicNode_Ptr& to) {
-    Position p1(from->lat(), from->lon());
-    Position p2(to->lat(), to->lon());
+    GeographicPosition p1(from->lat(), from->lon());
+    GeographicPosition p2(to->lat(), to->lon());
     return GeometricHelpers::getMidPointCoordinates(p1, p2);
 }
 
-GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(Position& n1, Position& n2) {
+GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(GeographicPosition& n1, GeographicPosition& n2) {
     // calculate midpoint
     // http://www.movable-type.co.uk/scripts/latlong.html
 
-    double lat1 = deg2rad(n1.lat);
-    double lon1 = deg2rad(n1.lon);
-    double lat2 = deg2rad(n2.lat);
+    double lat1 = deg2rad(n1.lat());
+    double lon1 = deg2rad(n1.lon());
+    double lat2 = deg2rad(n2.lat());
 
-    double dLon = deg2rad(n2.lon - n1.lon);
+    double dLon = deg2rad(n2.lon() - n1.lon());
 
     double Bx = cos(lat2) * cos(dLon);
     double By = cos(lat2) * sin(dLon);

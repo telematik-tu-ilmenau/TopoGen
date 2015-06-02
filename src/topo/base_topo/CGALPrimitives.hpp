@@ -44,7 +44,6 @@ typedef std::map<Point_3, GeographicNode_Ptr> CityMap;
 typedef std::shared_ptr<CityMap> CityMap_Ptr;
 
 namespace CGALPrimitives {
-Point_3 getMidPoint(GeographicNode_Ptr n1, GeographicNode_Ptr n2);
 Point_3 createPoint(double lat, double lon);
 };
 

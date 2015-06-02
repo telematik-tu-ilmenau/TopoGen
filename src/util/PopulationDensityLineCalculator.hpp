@@ -31,7 +31,7 @@
 #define POPULATIONDENSITYLINECALCULATOR_HPP
 
 #include "db/PopulationDensityReader.hpp"
-#include "geo/Position.hpp"
+#include "geo/GeographicPosition.hpp"
 #include "util/Util.hpp"
 #include <memory>
 #include <utility>
@@ -49,15 +49,15 @@ class PopulationDensityLineCalculator {
 
     ~PopulationDensityLineCalculator();
 
-    DensityVector_Ptr getDensityLineBetween(Position& p1, Position& p2);
+    DensityVector_Ptr getDensityLineBetween(GeographicPosition& p1, GeographicPosition& p2);
 
    protected:
    private:
-    double calcDist(Position& p1, Position& p2);
+    double calcDist(GeographicPosition& p1, GeographicPosition& p2);
 
-    Position getIntermediatePointAt(Position& p1, Position& p2, double distance, double percent);
+    GeographicPosition getIntermediatePointAt(GeographicPosition& p1, GeographicPosition& p2, double distance, double percent);
 
-    void appendLinePoint(DensityVector_Ptr result, Position& p);
+    void appendLinePoint(DensityVector_Ptr result, GeographicPosition& p);
 
     PopulationDensityReader_Ptr _reader;
 };

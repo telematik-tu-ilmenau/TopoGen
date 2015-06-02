@@ -78,13 +78,8 @@ void PopulationDensityFilter::filter(void) {
         GeographicNode_Ptr nd2 = nodeGeoNodeMap[v];
 
         if (isValidNode(nd1) && isValidNode(nd2)) {
-            Position p1;
-            p1.lat = nd1->lat();
-            p1.lon = nd1->lon();
-
-            Position p2;
-            p2.lat = nd2->lat();
-            p2.lon = nd2->lon();
+            GeographicPosition p1(nd1->lat(), nd1->lon());
+            GeographicPosition p2(nd2->lat(), nd2->lon());
 
             // escape edges below specific length treshold
             double c = GeometricHelpers::sphericalDist(p1, p2);
@@ -95,7 +90,7 @@ void PopulationDensityFilter::filter(void) {
 
             // INIT Bounding box reader
             GeographicPositionTuple midPoint = GeometricHelpers::getMidPointCoordinates(p1, p2);
-            Position midPointPos(midPoint.first, midPoint.second);
+            GeographicPosition midPointPos(midPoint.first, midPoint.second);
             SQLiteAreaPopulationReader_Ptr areaReader(new SQLiteAreaPopulationReader(
                 _dbFilename, midPoint.first, midPoint.second, GeometricHelpers::rad2deg(c)));
 
@@ -111,7 +106,7 @@ void PopulationDensityFilter::filter(void) {
 
                 // test if the populated position is within a more sophisticated area (derived from a beta-skeleton
                 // shape parameter)
-                Position toTest(next._lat, next._lon);
+                GeographicPosition toTest(next._lat, next._lon);
                 double a = GeometricHelpers::sphericalDist(p1, toTest);
                 double b = GeometricHelpers::sphericalDist(p2, toTest);
                 double C = Util::ihs((Util::hs(c) - Util::hs(a - b)) / (sin(a) * sin(b)));
@@ -174,13 +169,8 @@ void PopulationDensityFilter::filterByLength(void) {
         GeographicNode_Ptr nd2 = nodeGeoNodeMap[v];
 
         if (isValidNode(nd1) && isValidNode(nd2)) {
-            Position p1;
-            p1.lat = nd1->lat();
-            p1.lon = nd1->lon();
-
-            Position p2;
-            p2.lat = nd2->lat();
-            p2.lon = nd2->lon();
+            GeographicPosition p1(nd1->lat(), nd1->lon());
+            GeographicPosition p2(nd1->lat(), nd1->lon());
 
             double amountInetUsers = 0.0;
             if (isCityNode(nd1) && isCityNode(nd2)) {

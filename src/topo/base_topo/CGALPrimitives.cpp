@@ -31,17 +31,6 @@
 #include "geo/GeometricHelpers.hpp"
 #include "geo/GeographicPosition.hpp"
 
-Point_3 CGALPrimitives::getMidPoint(GeographicNode_Ptr n1, GeographicNode_Ptr n2) {
-    using namespace GeometricHelpers;
-
-    GeographicPositionTuple midCoords = getMidPointCoordinates(n1, n2);
-
-    double lat3 = midCoords.first;
-    double lon3 = midCoords.second;
-
-    return createPoint(rad2deg(lat3), rad2deg(lon3));
-}
-
 Point_3 CGALPrimitives::createPoint(double lat, double lon) {
     using namespace GeometricHelpers;
 

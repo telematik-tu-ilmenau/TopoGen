@@ -32,7 +32,6 @@
 
 #include "GeographicNode.hpp"
 #include "GeographicPosition.hpp"
-#include "Position.hpp"
 #include <utility>
 
 namespace GeometricHelpers {
@@ -40,11 +39,11 @@ double deg2rad(double deg);
 double rad2deg(double rad);
 
 double sphericalDist(GeographicNode_Ptr& from, GeographicNode_Ptr& to);
-double sphericalDist(Position& from, Position& to);
+double sphericalDist(GeographicPosition& from, GeographicPosition& to);
 double sphericalDistToKM(double dist);
 
 GeographicPositionTuple getMidPointCoordinates(GeographicNode_Ptr& n1, GeographicNode_Ptr& n2);
-GeographicPositionTuple getMidPointCoordinates(Position& n1, Position& n2);
+GeographicPositionTuple getMidPointCoordinates(GeographicPosition& n1, GeographicPosition& n2);
 };
 
 #endif

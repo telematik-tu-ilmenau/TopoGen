@@ -38,31 +38,27 @@ PopulationDensityLineCalculator::PopulationDensityLineCalculator(PopulationDensi
 PopulationDensityLineCalculator::~PopulationDensityLineCalculator() {
 }
 
-Position PopulationDensityLineCalculator::getIntermediatePointAt(Position& p1, Position& p2, double distance, double percent) {
+GeographicPosition PopulationDensityLineCalculator::getIntermediatePointAt(GeographicPosition& p1, GeographicPosition& p2, double distance, double percent) {
     using namespace GeometricHelpers;
 
-    Position p;
 
     double A = sin((1 - percent) * distance) / sin(distance);
     double B = sin(percent * distance) / sin(distance);
-    double lat1 = deg2rad(p1.lat);
-    double lon1 = deg2rad(p1.lon);
+    double lat1 = deg2rad(p1.lat());
+    double lon1 = deg2rad(p1.lon());
 
-    double lat2 = deg2rad(p2.lat);
-    double lon2 = deg2rad(p2.lon);
+    double lat2 = deg2rad(p2.lat());
+    double lon2 = deg2rad(p2.lon());
     double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
     double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
     double z = A * sin(lat1) + B * sin(lat2);
 
-    p.lat = rad2deg(atan2(z, sqrt(x * x + y * y)));
-    p.lon = rad2deg(atan2(y, x));
-
-    assert(Util::checkBounds(p));
+    GeographicPosition p(rad2deg(atan2(z, sqrt(x * x + y * y))), rad2deg(atan2(y, x)));
 
     return p;
 }
 
-DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(Position& p1, Position& p2) {
+DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(GeographicPosition& p1, GeographicPosition& p2) {
     using namespace GeometricHelpers;
     assert(Util::checkBounds(p1));
     assert(Util::checkBounds(p2));
@@ -76,16 +72,16 @@ DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(Positio
     double increment = deg2rad(_reader->cellsize()) / distance;
 
     for (double percent = 0.0; percent <= 1.0; percent += increment) {
-        Position p = getIntermediatePointAt(p1, p2, distance, percent);
+        GeographicPosition p = getIntermediatePointAt(p1, p2, distance, percent);
         appendLinePoint(result, p);
     }
 
     return result;
 }
 
-void PopulationDensityLineCalculator::appendLinePoint(DensityVector_Ptr result, Position& p) {
+void PopulationDensityLineCalculator::appendLinePoint(DensityVector_Ptr result, GeographicPosition& p) {
     // get raster points on array
-    double density_val = _reader->valueAt(p.lat, p.lon);
+    double density_val = _reader->valueAt(p.lat(), p.lon());
     if (density_val < 0.0)
         density_val = 0.0;
     result->push_back(density_val);

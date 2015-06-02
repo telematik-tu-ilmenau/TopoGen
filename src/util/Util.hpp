@@ -30,13 +30,13 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include "geo/Position.hpp"
+class GeographicPosition;
 
 namespace Util {
     double hs(double theta);
     double ihs(double theta);
     bool checkBounds(double lat, double lon);
-    bool checkBounds(Position& p);
+    bool checkBounds(GeographicPosition& p);
 };
 
 #endif

@@ -1,34 +1,33 @@
 #ifndef GEOGRAPHICPOSITION_HPP
 #define GEOGRAPHICPOSITION_HPP
 
+#include "util/Util.hpp"
 #include <cassert>
 #include <utility>
 
 typedef std::pair<double,double> GeographicPositionTuple;
 
-template <typename T>
 class GeographicPosition {
 public:
     GeographicPosition() : _latitude(0), _longitude(0), _valid(false) {}
 
-    GeographicPosition(T latitude, T longitude) : _latitude(latitude), _longitude(longitude), _valid(true) {
-        assert(-90.0 <= latitude && latitude <= 90.0);
-        assert(-180.0 <= longitude && longitude <= 180.0);
+    GeographicPosition(double latitude, double longitude) : _latitude(latitude), _longitude(longitude), _valid(true) {
+        assert(Util::checkBounds(latitude, longitude));
     }
 
-    virtual void setLat(T val) {
+    virtual void setLat(double val) {
         _latitude = val;
     }
 
-    virtual void setLon(T val) {
+    virtual void setLon(double val) {
         _longitude = val;
     }
 
-    T lat() {
+    double lat() {
         return _latitude;
     }
 
-    T lon() {
+    double lon() {
         return _longitude;
     }
 
@@ -45,8 +44,8 @@ public:
     }
 
 protected:
-    T _latitude;
-    T _longitude;
+    double _latitude;
+    double _longitude;
     bool _valid;
 };
 

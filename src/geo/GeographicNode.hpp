@@ -34,7 +34,7 @@
 #include <vector>
 #include <memory>
 
-class GeographicNode : public GeographicPosition<double> {
+class GeographicNode : public GeographicPosition {
    public:
     GeographicNode();
     GeographicNode(const GeographicNode& other);

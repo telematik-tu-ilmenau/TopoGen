@@ -56,7 +56,8 @@ void PopulationDensityFilter::filter(void) {
     // crucial parameters
     std::unique_ptr<Config> config(new Config);
     const double MIN_LENGTH = config->get<double>("lengthFilter.minLength");
-    const double POPULATION_THRESHOLD = 10000.0;
+    const double POPULATION_THRESHOLD = config->get<double>("lengthFilter.populationThreshold");
+    const double BETA = config->get<double>("lengthFilter.beta");
 
     // iterate over edges
     Graph& graph = *_baseTopo->getGraph();
@@ -112,7 +113,7 @@ void PopulationDensityFilter::filter(void) {
                 double C = Util::ihs((Util::hs(c) - Util::hs(a - b)) / (sin(a) * sin(b)));
 
                 // Point is out of area, skip
-                const double theta = M_PI - asin(0.8);  // --> beta = 0.8
+                const double theta = M_PI - asin(BETA);
                 if (C < theta) {
                     continue;
                 }

@@ -20,7 +20,9 @@
 
   "lengthFilter" : {
     "enable": true,
-    "minLength": 600.0
+    "minLength": 600.0,
+    "populationThreshold" : 10000.0,
+    "beta" : 0.8
   },
 
   "debug" : {

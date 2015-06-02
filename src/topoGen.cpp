@@ -286,5 +286,7 @@ int main(int argc, char** argv) {
     if (args->jsonOutputEnabled())
         writeJSONGraph(baseTopo, config, args->jsonOutputFile());
 
+    delete delGen;
+
     return EXIT_SUCCESS;
 }

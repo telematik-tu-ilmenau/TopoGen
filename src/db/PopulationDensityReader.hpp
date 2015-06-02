@@ -69,6 +69,9 @@ class PopulationDensityReader {
     FileHeader _header;
 
     double* _data;
+
+    PopulationDensityReader(const PopulationDensityReader&) = delete;
+    PopulationDensityReader& operator=(const PopulationDensityReader&) = delete;
 };
 
 #endif  // POPULATIONDENSITYREADER_HPP

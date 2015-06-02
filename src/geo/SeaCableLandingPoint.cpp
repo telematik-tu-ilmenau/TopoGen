@@ -29,7 +29,7 @@
 
 #include "SeaCableLandingPoint.hpp"
 
-SeaCableLandingPoint::SeaCableLandingPoint() {
+SeaCableLandingPoint::SeaCableLandingPoint() : _name() {
 }
 
 SeaCableLandingPoint::SeaCableLandingPoint(const SeaCableLandingPoint& other)

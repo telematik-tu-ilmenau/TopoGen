@@ -48,7 +48,7 @@
 #include <boost/log/trivial.hpp>
 
 NodeImporter::NodeImporter(void)
-    : _nodenumber(0), _locations(new Locations), _dbFilename(PredefinedValues::dbFilePath()) {
+    : _nodenumber(0), _locations(new Locations), _dbFilename(PredefinedValues::dbFilePath()), _fallbackProjection() {
 }
 
 void NodeImporter::addNode(GeographicNode_Ptr node) {

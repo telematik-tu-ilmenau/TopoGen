@@ -36,7 +36,7 @@
 #include <random>
 
 OPTICSFilter::OPTICSFilter(Locations_Ptr& locations, double eps, unsigned int minPts, double epsDBSCAN)
-    : _locations(locations), _eps(eps), _minPts(minPts), _epsDBSCAN(epsDBSCAN) {
+    : _locations(locations), _eps(eps), _minPts(minPts), _epsDBSCAN(epsDBSCAN), _opticsObjects(), _unprocessedObjects(), _orderedObjects() {
     for (GeographicNode_Ptr& node : *_locations) {
         auto opticsObj = OPTICSObject_Ptr(new OPTICSObject(node));
         _opticsObjects.insert(std::make_pair(node->id(), opticsObj));

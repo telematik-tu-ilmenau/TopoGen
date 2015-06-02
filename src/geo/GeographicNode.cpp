@@ -30,7 +30,7 @@
 #include "GeographicNode.hpp"
 #include "topo/base_topo/BaseTopology.hpp"
 
-GeographicNode::GeographicNode() {
+GeographicNode::GeographicNode() : _id(-1) {
 }
 
 GeographicNode::GeographicNode(int id, double lat, double lon) : GeographicPosition(lat, lon), _id(id) {

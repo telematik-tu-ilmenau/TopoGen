@@ -62,9 +62,7 @@ SubmarineCableEdge SubmarineCable::getNext() {
     else
         _rowAvailable = false;
 
-    SubmarineCableEdge edge;
-    edge.coord1 = std::make_pair(lat1, lon1);
-    edge.coord2 = std::make_pair(lat2, lon2);
+    SubmarineCableEdge edge(std::make_pair(lat1, lon1), std::make_pair(lat2, lon2));
 
     return edge;
 }

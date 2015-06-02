@@ -38,6 +38,8 @@
 struct SubmarineCableEdge {
     GeographicPositionTuple coord1;
     GeographicPositionTuple coord2;
+
+    SubmarineCableEdge(GeographicPositionTuple c1, GeographicPositionTuple c2) : coord1(c1), coord2(c2) {}
 };
 
 class SubmarineCable : public SQLiteReader, public ResultIterator<SubmarineCableEdge> {

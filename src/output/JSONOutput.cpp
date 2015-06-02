@@ -40,7 +40,7 @@
 #include <fstream>
 
 JSONOutput::JSONOutput(BaseTopology_Ptr baseTopo)
-    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeToCity(_baseTopo->getNodeMap()) {
+    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeToCity(_baseTopo->getNodeMap()), _json() {
 }
 
 JSONOutput::~JSONOutput() {

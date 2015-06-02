@@ -33,7 +33,7 @@ configure_file(src/config/Defines.hpp.cmake
 #
 # COMPILER OPTIONS
 #
-set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -march=native -O3 -std=c++11")
+set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Weffc++ -march=native -O3 -std=c++11 -fsanitize=address")
 include_directories("${SRCDIR}" "${CMAKE_BINARY_DIR}/src" "/usr/local/include")
 link_directories("/usr/local/lib")
 

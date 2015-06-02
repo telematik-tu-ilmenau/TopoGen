@@ -30,7 +30,7 @@
 #include "SimulationNode.hpp"
 #include "topo/base_topo/BaseTopology.hpp"
 
-SimulationNode::SimulationNode() {
+SimulationNode::SimulationNode() : _outerID(-1) {
 }
 
 SimulationNode::SimulationNode(int id, double lat, double lon) : GeographicNode(id, lat, lon), _outerID(id) {

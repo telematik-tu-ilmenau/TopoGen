@@ -35,12 +35,12 @@
 #include <string>
 #include <utility>
 
-Config::Config() {
+Config::Config() : _config() {
     std::ifstream configFile(PredefinedValues::configfile());
     configFile >> _config;
 }
 
-Config::Config(std::string fileName) {
+Config::Config(std::string fileName) : _config() {
     std::ifstream configFile(fileName);
     configFile >> _config;
 }

@@ -34,6 +34,8 @@
 
 class SQLiteReader {
    public:
+    SQLiteReader() : _sqliteDB(nullptr), _stmt(nullptr) {}
+
     virtual ~SQLiteReader() {
         sqlite3_finalize(_stmt);
         sqlite3_close(_sqliteDB);
@@ -44,6 +46,8 @@ class SQLiteReader {
     sqlite3_stmt* _stmt;
 
    private:
+    SQLiteReader(const SQLiteReader&) = delete;
+    SQLiteReader& operator=(const SQLiteReader&) = delete;
 };
 
 #endif  // SQLITEREADER_HPP

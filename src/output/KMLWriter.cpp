@@ -42,7 +42,7 @@
 #include <iterator>
 
 KMLWriter::KMLWriter(BaseTopology_Ptr baseTopo)
-    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeInfos(_baseTopo->getNodeMap()), _kmlOut() {
+    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeInfos(_baseTopo->getNodeMap()), _pincolor(), _edgecolor(), _seacableColor(), _seacablePinColor(), _kmlOut() {
     setEdgeColor("ffffff", 1.0);
     setPinColor("ffffff", 1.0);
 }

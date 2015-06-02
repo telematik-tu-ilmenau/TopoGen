@@ -36,7 +36,7 @@
 
 class CityNode : public GeographicNode {
    public:
-    CityNode() {}
+    CityNode() : _name(), _population(), _country(), _continent(), _seacableLandingPoint() {}
     CityNode(int id,
              std::string name,
              double lat,

@@ -44,8 +44,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-PopulationDensityReader::PopulationDensityReader(void) : _data(nullptr) {
-    _file = open(PredefinedValues::popDensityFilePath().c_str(), O_RDONLY);
+PopulationDensityReader::PopulationDensityReader(void) : _file(open(PredefinedValues::popDensityFilePath().c_str(), O_RDONLY)), _header(), _data(nullptr) {
     assert(_file != -1);
     parseHeader();
     readData();
@@ -88,6 +87,8 @@ double PopulationDensityReader::valueAt(int row, int col) {
 
 PopulationDensityReader::~PopulationDensityReader(void) {
     munmap(_data, getDataSize());
+    _data = nullptr;
+    close(_file);
 }
 
 void PopulationDensityReader::parseHeader(void) {

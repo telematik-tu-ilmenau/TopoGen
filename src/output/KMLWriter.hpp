@@ -47,6 +47,9 @@ class KMLWriter {
 
     void setSeacablePinColor(std::string hex, double alpha);
 
+    void disableSeacablePins();
+    void disableLocationsPins();
+
     void createKML(void);
 
     void write(const char* filename);
@@ -62,9 +65,14 @@ class KMLWriter {
 
     std::stringstream _kmlOut;
 
+    bool _drawLocationPins;
+    bool _drawSeacablePins;
+
     const std::string intToHex(int i);
     std::string alphaToHex(double alpha);
     std::string hexToKML(std::string hex);
+
+    void drawCircleAt(double lat, double lon);
 
     KMLWriter(const KMLWriter&);
 };

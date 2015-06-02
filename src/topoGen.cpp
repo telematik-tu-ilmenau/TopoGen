@@ -124,6 +124,10 @@ void writeKMLGraph(BaseTopology_Ptr baseTopo, Config_Ptr kmlConfig, std::string 
     kmlw->setPinColor(pincolor, pinAlpha);
     kmlw->setSeacableColor(seacablecolor, seacableAlpha);
     kmlw->setSeacablePinColor(seacablePinColor, seacablePinAlpha);
+    if (!kmlConfig->get<bool>("seacablepins.enabled"))
+        kmlw->disableSeacablePins();
+    if (!kmlConfig->get<bool>("pins.enabled"))
+        kmlw->disableLocationsPins();
     kmlw->createKML();
     kmlw->write(outFileName.c_str());
 

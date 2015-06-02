@@ -29,7 +29,15 @@
 
 #include "CMDArgs.hpp"
 
-CMDArgs::CMDArgs(int argc, char** argv) : _desc("Allowed options"), _vm(), kmlOutput(false), graphOutput(false), jsonOutput(false), seed(), simNodesJSONPath(), jsonOutFile() {
+CMDArgs::CMDArgs(int argc, char** argv)
+    : _desc("Allowed options"),
+      _vm(),
+      kmlOutput(false),
+      graphOutput(false),
+      jsonOutput(false),
+      seed(),
+      simNodesJSONPath(),
+      jsonOutFile() {
     _desc.add_options()("help", "produce help message")("kml", po::value<bool>(&kmlOutput)->zero_tokens())(
         "json", po::value<bool>(&jsonOutput)->zero_tokens())("graph", po::value<bool>(&graphOutput)->zero_tokens())(
         "seed", po::value<std::string>(&seed)->default_value("run1"))(

@@ -11,6 +11,7 @@ class ResultIterator {
     virtual Result getNext() = 0;
 
     virtual ~ResultIterator() {}
+
    protected:
     bool _rowAvailable;
 };

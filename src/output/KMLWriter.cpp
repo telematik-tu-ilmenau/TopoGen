@@ -42,7 +42,16 @@
 #include <iterator>
 
 KMLWriter::KMLWriter(BaseTopology_Ptr baseTopo)
-    : _baseTopo(baseTopo), _graph(_baseTopo->getGraph()), _nodeInfos(_baseTopo->getNodeMap()), _pincolor(), _edgecolor(), _seacableColor(), _seacablePinColor(), _kmlOut() {
+    : _baseTopo(baseTopo),
+      _graph(_baseTopo->getGraph()),
+      _nodeInfos(_baseTopo->getNodeMap()),
+      _pincolor(),
+      _edgecolor(),
+      _seacableColor(),
+      _seacablePinColor(),
+      _kmlOut(),
+      _drawLocationPins(true),
+      _drawSeacablePins(true) {
     setEdgeColor("ffffff", 1.0);
     setPinColor("ffffff", 1.0);
 }
@@ -76,12 +85,22 @@ void KMLWriter::createKML() {
         }
 
         {
-            // set iconstyle
+            // set linestyle
             _kmlOut << "<LineStyle>\n";
             _kmlOut << "<color>" << _edgecolor << "</color>\n";
             _kmlOut << "<colorMode>normal</colorMode>\n";
             _kmlOut << "<width>2</width>\n";
             _kmlOut << "</LineStyle>\n";
+        }
+
+        {
+            // set polystyle
+            _kmlOut << "<PolyStyle>\n";
+            _kmlOut << "<color>" << _edgecolor << "</color>\n";
+            _kmlOut << "<colorMode>normal</colorMode>\n";
+            _kmlOut << "<fill>1</fill>\n";
+            _kmlOut << "<outline>1</outline>\n";
+            _kmlOut << "</PolyStyle>\n";
         }
 
         _kmlOut << "</Style>\n";
@@ -110,8 +129,21 @@ void KMLWriter::createKML() {
         _kmlOut << "</Style>\n";
     }
 
-    // iterate over all edges
     using namespace lemon;
+
+    for (ListGraph::NodeIt node(*_graph); node != lemon::INVALID; ++node) {
+        GeographicNode_Ptr place = (*_nodeInfos)[node];
+        if (!place->isValid())
+            continue;
+
+        bool isCityNode = dynamic_cast<CityNode*>(place.get()) != nullptr;
+        if (!isCityNode)
+            continue;
+
+        drawCircleAt(place->lat(), place->lon());
+    }
+
+    // iterate over all edges
     for (ListGraph::EdgeIt edge(*_graph); edge != lemon::INVALID; ++edge) {
         GeographicNode_Ptr n1 = (*_nodeInfos)[_graph->u(edge)];
         GeographicNode_Ptr n2 = (*_nodeInfos)[_graph->v(edge)];
@@ -156,10 +188,18 @@ void KMLWriter::createKML() {
         if (!place->isValid())
             continue;
 
-        _kmlOut << "<Placemark>\n";
+        bool isCityNode = dynamic_cast<CityNode*>(place.get()) != nullptr;
+        bool isSeaCableLandingPoint = dynamic_cast<SeaCableLandingPoint*>(place.get()) != nullptr;
 
-        if (dynamic_cast<CityNode*>(place.get()) != nullptr ||
-            dynamic_cast<SeaCableLandingPoint*>(place.get()) != nullptr) {
+        if (isCityNode && !_drawLocationPins)
+            continue;
+
+        if (isSeaCableLandingPoint && !_drawSeacablePins)
+            continue;
+
+        if (isCityNode || isSeaCableLandingPoint) {
+            _kmlOut << "<Placemark>\n";
+
             _kmlOut << "<name>";
 
             if (dynamic_cast<CityNode*>(place.get()) != nullptr) {
@@ -173,27 +213,27 @@ void KMLWriter::createKML() {
             }
 
             _kmlOut << "</name>\n";
+
+            _kmlOut << "<styleUrl>";
+
+            if (dynamic_cast<SeaCableNode*>(place.get()))
+                _kmlOut << "#seacableStyle";
+            else
+                _kmlOut << "#styleDefault";
+
+            _kmlOut << "</styleUrl>\n";
+
+            _kmlOut << "<Point>\n";
+
+            // insert actual coordinates
+            _kmlOut << "<coordinates>";
+            _kmlOut << place->lon() << "," << place->lat() << ",0";
+            _kmlOut << "</coordinates>\n";
+
+            _kmlOut << "</Point>\n";
+
+            _kmlOut << "</Placemark>\n";
         }
-
-        _kmlOut << "<styleUrl>";
-
-        if (dynamic_cast<SeaCableNode*>(place.get()))
-            _kmlOut << "#seacableStyle";
-        else
-            _kmlOut << "#styleDefault";
-
-        _kmlOut << "</styleUrl>\n";
-
-        _kmlOut << "<Point>\n";
-
-        // insert actual coordinates
-        _kmlOut << "<coordinates>";
-        _kmlOut << place->lon() << "," << place->lat() << ",0";
-        _kmlOut << "</coordinates>\n";
-
-        _kmlOut << "</Point>\n";
-
-        _kmlOut << "</Placemark>\n";
     }
 
     _kmlOut << "</Document>\n";
@@ -225,6 +265,14 @@ void KMLWriter::setSeacablePinColor(std::string hex, double alpha) {
 std::string KMLWriter::alphaToHex(double alpha) {
     int a_i = static_cast<int>(alpha * 255.0);
     return intToHex(a_i);
+}
+
+void KMLWriter::disableSeacablePins() {
+    _drawSeacablePins = false;
+}
+
+void KMLWriter::disableLocationsPins() {
+    _drawLocationPins = false;
 }
 
 std::string KMLWriter::hexToKML(std::string hex) {

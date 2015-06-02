@@ -44,7 +44,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-PopulationDensityReader::PopulationDensityReader(void) : _file(open(PredefinedValues::popDensityFilePath().c_str(), O_RDONLY)), _header(), _data(nullptr) {
+PopulationDensityReader::PopulationDensityReader(void)
+    : _file(open(PredefinedValues::popDensityFilePath().c_str(), O_RDONLY)), _header(), _data(nullptr) {
     assert(_file != -1);
     parseHeader();
     readData();

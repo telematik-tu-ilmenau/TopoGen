@@ -1,6 +1,6 @@
 {
   "cityfilter" : {
-    "citysizethreshold" : 300000
+    "citysizethreshold" : 100000
   },
 
   "neighbourCluster" : {
@@ -42,6 +42,7 @@
 
   "kml_graph_output" : {
     "pins" : {
+      "enabled" : false,
       "color" : "FF4F1B",
       "alpha" : 1.0
     },
@@ -54,6 +55,7 @@
       "alpha" : 1.0
     },
     "seacablepins" : {
+      "enabled" : false,
       "color" : "80DCEA",
       "alpha" : 1.0
     },

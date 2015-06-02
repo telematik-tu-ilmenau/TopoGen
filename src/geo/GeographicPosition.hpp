@@ -29,7 +29,7 @@ class GeographicPosition {
 
     bool isValid() { return _valid; }
 
-    virtual ~GeographicPosition() {};
+    virtual ~GeographicPosition(){};
 
    protected:
     double _latitude;

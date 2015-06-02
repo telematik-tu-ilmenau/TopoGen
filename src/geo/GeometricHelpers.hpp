@@ -33,10 +33,15 @@
 #include "GeographicNode.hpp"
 #include "GeographicPosition.hpp"
 #include <utility>
+#include <cmath>
 
 namespace GeometricHelpers {
 double deg2rad(double deg);
 double rad2deg(double rad);
+
+constexpr double DEG_TO_RAD = M_PI / 180.0;
+constexpr double RAD_TO_DEG = 180.0 / M_PI;
+constexpr double EARTH_RADIUS_KM = 6371.000785;
 
 double sphericalDist(GeographicNode_Ptr& from, GeographicNode_Ptr& to);
 double sphericalDist(GeographicPosition& from, GeographicPosition& to);

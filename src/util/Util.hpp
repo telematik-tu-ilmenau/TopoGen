@@ -33,10 +33,10 @@
 class GeographicPosition;
 
 namespace Util {
-    double hs(double theta);
-    double ihs(double theta);
-    bool checkBounds(double lat, double lon);
-    bool checkBounds(GeographicPosition& p);
+double hs(double theta);
+double ihs(double theta);
+bool checkBounds(double lat, double lon);
+bool checkBounds(GeographicPosition& p);
 };
 
 #endif

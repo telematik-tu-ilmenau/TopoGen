@@ -33,22 +33,19 @@
 #include <cmath>
 
 double GeometricHelpers::deg2rad(double deg) {
-    return deg * M_PI / 180.0;
+    return deg * GeometricHelpers::DEG_TO_RAD;
 }
-
-/// @brief The usual PI/180 constant
-static const double DEG_TO_RAD = 0.017453292519943295769236907684886;
 
 // http://blog.julien.cayzac.name/2008/10/arc-and-distance-between-two-points-on.html
 // use the law of haversines for numerical stability
 double GeometricHelpers::sphericalDist(GeographicPosition& from, GeographicPosition& to) {
-    double latitudeArc = (from.lat() - to.lat()) * DEG_TO_RAD;
-    double longitudeArc = (from.lon() - to.lon()) * DEG_TO_RAD;
+    double latitudeArc = (from.lat() - to.lat()) * GeometricHelpers::DEG_TO_RAD;
+    double longitudeArc = (from.lon() - to.lon()) * GeometricHelpers::DEG_TO_RAD;
     double latitudeH = sin(latitudeArc * 0.5);
     latitudeH *= latitudeH;
     double lontitudeH = sin(longitudeArc * 0.5);
     lontitudeH *= lontitudeH;
-    double tmp = cos(from.lat() * DEG_TO_RAD) * cos(to.lat() * DEG_TO_RAD);
+    double tmp = cos(from.lat() * GeometricHelpers::DEG_TO_RAD) * cos(to.lat() * GeometricHelpers::DEG_TO_RAD);
     return 2.0 * asin(sqrt(latitudeH + tmp * lontitudeH));
 }
 
@@ -83,10 +80,9 @@ GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(GeographicPosit
 }
 
 double GeometricHelpers::rad2deg(double rad) {
-    return rad * 180.0 / M_PI;
+    return rad * GeometricHelpers::RAD_TO_DEG;
 }
 
 double GeometricHelpers::sphericalDistToKM(double dist) {
-    constexpr double EARTH_RADIUS_KM = 6371.000785;
-    return dist * EARTH_RADIUS_KM;
+    return dist * GeometricHelpers::EARTH_RADIUS_KM;
 }

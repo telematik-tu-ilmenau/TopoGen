@@ -42,7 +42,8 @@ SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThr
     if (retval) {
         BOOST_LOG_TRIVIAL(error) << "Database connection failed for SQLiteLocationReader";
     }
-    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath << " successfully established in SQLiteLocationReader!";
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath
+                            << " successfully established in SQLiteLocationReader!";
 
     std::string queryString(
         " SELECT geo.Name AS Name,"

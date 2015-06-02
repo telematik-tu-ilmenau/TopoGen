@@ -41,7 +41,6 @@ class LandingPointReader : public SQLiteReader, public ResultIterator<SeaCableLa
     SeaCableLandingPoint getNext();
 
    private:
-
     std::string getContinentLandingPoint(std::string name);
 };
 

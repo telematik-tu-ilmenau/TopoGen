@@ -3,16 +3,13 @@
 
 template <class Result>
 class ResultIterator {
-public:
-    bool hasNext() {
-        return _rowAvailable;
-    }
+   public:
+    bool hasNext() { return _rowAvailable; }
 
     virtual Result getNext() = 0;
 
-protected:
+   protected:
     bool _rowAvailable;
 };
 
-#endif // RESULTITERATOR_HPP
-
+#endif  // RESULTITERATOR_HPP

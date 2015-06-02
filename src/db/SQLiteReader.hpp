@@ -33,16 +33,17 @@
 #include <sqlite3.h>
 
 class SQLiteReader {
-public:
+   public:
     virtual ~SQLiteReader() {
         sqlite3_finalize(_stmt);
         sqlite3_close(_sqliteDB);
     }
-protected:
+
+   protected:
     sqlite3* _sqliteDB;
     sqlite3_stmt* _stmt;
-private:
+
+   private:
 };
 
-#endif // SQLITEREADER_HPP
-
+#endif  // SQLITEREADER_HPP

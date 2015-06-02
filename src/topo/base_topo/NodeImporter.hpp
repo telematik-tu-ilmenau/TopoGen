@@ -65,7 +65,8 @@ class NodeImporter {
     std::string _dbFilename;
     static double constexpr DIST_TRESHOLD = 0.0005;
 
-    std::map<GeographicPositionTuple, GeographicPositionTuple> _fallbackProjection;  // quick hack: ensure correct placement of seacable nodes
+    std::map<GeographicPositionTuple, GeographicPositionTuple>
+        _fallbackProjection;  // quick hack: ensure correct placement of seacable nodes
 };
 
 #endif  // NODEIMPORTER_HPP

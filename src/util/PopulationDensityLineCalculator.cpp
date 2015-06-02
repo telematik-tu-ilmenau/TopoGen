@@ -38,9 +38,11 @@ PopulationDensityLineCalculator::PopulationDensityLineCalculator(PopulationDensi
 PopulationDensityLineCalculator::~PopulationDensityLineCalculator() {
 }
 
-GeographicPosition PopulationDensityLineCalculator::getIntermediatePointAt(GeographicPosition& p1, GeographicPosition& p2, double distance, double percent) {
+GeographicPosition PopulationDensityLineCalculator::getIntermediatePointAt(GeographicPosition& p1,
+                                                                           GeographicPosition& p2,
+                                                                           double distance,
+                                                                           double percent) {
     using namespace GeometricHelpers;
-
 
     double A = sin((1 - percent) * distance) / sin(distance);
     double B = sin(percent * distance) / sin(distance);
@@ -58,7 +60,8 @@ GeographicPosition PopulationDensityLineCalculator::getIntermediatePointAt(Geogr
     return p;
 }
 
-DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(GeographicPosition& p1, GeographicPosition& p2) {
+DensityVector_Ptr PopulationDensityLineCalculator::getDensityLineBetween(GeographicPosition& p1,
+                                                                         GeographicPosition& p2) {
     using namespace GeometricHelpers;
     assert(Util::checkBounds(p1));
     assert(Util::checkBounds(p2));

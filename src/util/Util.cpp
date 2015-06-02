@@ -42,12 +42,12 @@ double Util::ihs(double theta) {
     return 2.0 * asin(sqrt(theta));
 }
 
-bool Util::checkBounds(double lat, double lon){
+bool Util::checkBounds(double lat, double lon) {
     bool latOk = -90.0 <= lat && lat <= 90.0;
     bool lonOk = -180.0 <= lon && lon <= 180.0;
     return latOk && lonOk;
 }
 
-bool Util::checkBounds(GeographicPosition& p){
+bool Util::checkBounds(GeographicPosition& p) {
     return checkBounds(p.lat(), p.lon());
 }

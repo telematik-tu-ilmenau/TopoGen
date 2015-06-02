@@ -56,8 +56,6 @@
 #include <string>
 #include <vector>
 
-constexpr double EARTH_RADIUS_KM = 6371.000785;
-
 void performOPTICSClustering(Config_Ptr& config, Locations_Ptr& locations, CMDArgs_Ptr& args) {
     unsigned int neighbourCluster_minPts = config->get<unsigned int>("neighbourCluster.minPts");
     assert(neighbourCluster_minPts > 0);
@@ -65,7 +63,7 @@ void performOPTICSClustering(Config_Ptr& config, Locations_Ptr& locations, CMDAr
     double neighbourCluster_maxClusterDistance = config->get<double>("neighbourCluster.maxClusterDistance");
     assert(neighbourCluster_maxClusterDistance > 0.0);
 
-    double neighbourCluster_eps = neighbourCluster_maxClusterDistance / EARTH_RADIUS_KM;
+    double neighbourCluster_eps = neighbourCluster_maxClusterDistance / GeometricHelpers::EARTH_RADIUS_KM;
     std::unique_ptr<OPTICSFilter> neighbourCluster_optics(
         new OPTICSFilter(locations, neighbourCluster_eps, neighbourCluster_minPts, 0.8 * neighbourCluster_eps));
     neighbourCluster_optics->filter(args->getSeed());
@@ -78,7 +76,7 @@ void performOPTICSClustering(Config_Ptr& config, Locations_Ptr& locations, CMDAr
     double metropolisCluster_maxClusterDistance = config->get<double>("metropolisCluster.maxClusterDistance");
     assert(metropolisCluster_maxClusterDistance > 0.0);
 
-    double metropolisCluster_eps = metropolisCluster_maxClusterDistance / EARTH_RADIUS_KM;
+    double metropolisCluster_eps = metropolisCluster_maxClusterDistance / GeometricHelpers::EARTH_RADIUS_KM;
     std::unique_ptr<OPTICSFilter> metropolisCluster_optics(
         new OPTICSFilter(locations, metropolisCluster_eps, metropolisCluster_minPts, 0.8 * metropolisCluster_eps));
     metropolisCluster_optics->filter(args->getSeed());
@@ -202,7 +200,6 @@ int main(int argc, char** argv) {
 
     nodeImport->importSubmarineCableEdgesWaypoints();
     BOOST_LOG_TRIVIAL(info) << locations->size() << " locations after importing seacable waypoints";
-
 
     // reset nodeIDs of all imported nodes, corresponding ids in lemon graphs go from 0 to numNodes-1
     int nodeId = 0;

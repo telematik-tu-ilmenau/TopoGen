@@ -33,14 +33,14 @@
 GeographicNode::GeographicNode() {
 }
 
-GeographicNode::GeographicNode(int id, double lat, double lon)
-    : GeographicPosition(lat, lon), _id(id) {
+GeographicNode::GeographicNode(int id, double lat, double lon) : GeographicPosition(lat, lon), _id(id) {
 }
 
-GeographicNode::GeographicNode(const GeographicNode& other) : GeographicPosition(other._latitude, other._longitude), _id(other._id) {
+GeographicNode::GeographicNode(const GeographicNode& other)
+    : GeographicPosition(other._latitude, other._longitude), _id(other._id) {
 }
 
-GeographicNode& GeographicNode::operator=(const GeographicNode& other)  {
+GeographicNode& GeographicNode::operator=(const GeographicNode& other) {
     this->_id = other._id;
     this->_latitude = other._latitude;
     this->_longitude = other._longitude;

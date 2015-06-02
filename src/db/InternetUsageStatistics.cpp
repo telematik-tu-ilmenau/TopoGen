@@ -42,11 +42,12 @@ InternetUsageStatistics::InternetUsageStatistics(std::string dbPath) {
         BOOST_LOG_TRIVIAL(error) << "Database connection failed in InternetUsageStatistics!";
     }
     assert(retval == SQLITE_OK);
-    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath << " successfully established in InternetUsageStatistics!";
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath
+                            << " successfully established in InternetUsageStatistics!";
 
     std::string queryString(
         " SELECT value FROM unbroadbandstats as un,"
-        "     rel_country_to_un as rel"
+        "        rel_country_to_un as rel"
         " WHERE un.country_or_area = rel.country_or_area"
         " AND rel.country = ?"
         " GROUP BY un.country_or_area"

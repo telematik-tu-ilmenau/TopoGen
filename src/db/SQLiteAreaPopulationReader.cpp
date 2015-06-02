@@ -43,7 +43,8 @@ SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, doubl
         BOOST_LOG_TRIVIAL(error) << "Database connection failed in SQLiteAreaPopulationReader";
     }
     assert(retval == SQLITE_OK);
-    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath << " successfully established in SQLiteAreaPopulationReader!";
+    BOOST_LOG_TRIVIAL(info) << "SQLite connection to " << dbPath
+                            << " successfully established in SQLiteAreaPopulationReader!";
 
     std::string queryString(
         " SELECT geo.Latitude AS Latitude,"

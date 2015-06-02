@@ -55,7 +55,10 @@ class PopulationDensityLineCalculator {
    private:
     double calcDist(GeographicPosition& p1, GeographicPosition& p2);
 
-    GeographicPosition getIntermediatePointAt(GeographicPosition& p1, GeographicPosition& p2, double distance, double percent);
+    GeographicPosition getIntermediatePointAt(GeographicPosition& p1,
+                                              GeographicPosition& p2,
+                                              double distance,
+                                              double percent);
 
     void appendLinePoint(DensityVector_Ptr result, GeographicPosition& p);
 

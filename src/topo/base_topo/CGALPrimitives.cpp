@@ -29,11 +29,12 @@
 
 #include "CGALPrimitives.hpp"
 #include "geo/GeometricHelpers.hpp"
+#include "geo/GeographicPosition.hpp"
 
 Point_3 CGALPrimitives::getMidPoint(GeographicNode_Ptr n1, GeographicNode_Ptr n2) {
     using namespace GeometricHelpers;
 
-    std::pair<double, double> midCoords = getMidPointCoordinates(n1, n2);
+    GeographicPositionTuple midCoords = getMidPointCoordinates(n1, n2);
 
     double lat3 = midCoords.first;
     double lon3 = midCoords.second;

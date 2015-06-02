@@ -28,9 +28,10 @@
  */
 
 #include "LandingPointReader.hpp"
+
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <iostream>
-#include <boost/log/trivial.hpp>
 
 LandingPointReader::LandingPointReader(std::string dbName) {
     int retval = sqlite3_open(dbName.c_str(), &_sqliteDB);

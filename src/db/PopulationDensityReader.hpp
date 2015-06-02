@@ -30,8 +30,8 @@
 #ifndef POPULATIONDENSITYREADER_HPP
 #define POPULATIONDENSITYREADER_HPP
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 class PopulationDensityReader;
 typedef std::shared_ptr<PopulationDensityReader> PopulationDensityReader_Ptr;

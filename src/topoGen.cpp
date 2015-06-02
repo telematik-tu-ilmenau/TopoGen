@@ -27,6 +27,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "geo/GeographicPosition.hpp"
 #include "config/CMDArgs.hpp"
 #include "config/Config.hpp"
 #include "config/PredefinedValues.hpp"
@@ -251,8 +252,8 @@ int main(int argc, char** argv) {
      IMPORT SUBMARINE CABLES
     */
     // debug
-    std::vector<std::pair<double, double>> degNodesExclSubmarine = baseTopo->getHighestDegreeNodes(2, false);
-    std::vector<std::pair<double, double>> degNodesExclSubmarineUSonly = baseTopo->getHighestDegreeNodes(2, true);
+    std::vector<GeographicPositionTuple> degNodesExclSubmarine = baseTopo->getHighestDegreeNodes(2, false);
+    std::vector<GeographicPositionTuple> degNodesExclSubmarineUSonly = baseTopo->getHighestDegreeNodes(2, true);
 
     nodeImport->importSubmarineCableEdges(baseTopo);
 

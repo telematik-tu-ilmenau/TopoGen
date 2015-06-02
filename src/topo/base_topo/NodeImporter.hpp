@@ -32,6 +32,7 @@
 
 #include "geo/CityNode.hpp"
 #include "geo/GeographicNode.hpp"
+#include "geo/GeographicPosition.hpp"
 #include "geo/SeaCableLandingPoint.hpp"
 #include "geo/SeaCableNode.hpp"
 #include "topo/base_topo/BaseTopology.hpp"
@@ -57,8 +58,6 @@ class NodeImporter {
    private:
     GeographicNode_Ptr findNearest(GeographicNode_Ptr& node);
 
-    typedef std::pair<double, double> Coordinate;
-
     int _nodenumber;
 
     Locations_Ptr _locations;
@@ -66,7 +65,7 @@ class NodeImporter {
     std::string _dbFilename;
     static double constexpr DIST_TRESHOLD = 0.0005;
 
-    std::map<Coordinate, Coordinate> _fallbackProjection;  // quick hack: ensure correct placement of seacable nodes
+    std::map<GeographicPositionTuple, GeographicPositionTuple> _fallbackProjection;  // quick hack: ensure correct placement of seacable nodes
 };
 
 #endif  // NODEIMPORTER_HPP

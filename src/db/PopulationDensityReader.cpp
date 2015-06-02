@@ -28,20 +28,21 @@
  */
 
 #include "PopulationDensityReader.hpp"
+
 #include "config/PredefinedValues.hpp"
 #include "util/Util.hpp"
 #include <cassert>
-#include <string>
-#include <fstream>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <iostream>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
-#include <cmath>
+#include <fcntl.h>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 PopulationDensityReader::PopulationDensityReader(void) : _data(nullptr) {
     _file = open(PredefinedValues::popDensityFilePath().c_str(), O_RDONLY);

@@ -28,6 +28,7 @@
  */
 
 #include "GeometricHelpers.hpp"
+
 #include <algorithm>
 #include <cmath>
 
@@ -61,13 +62,13 @@ double GeometricHelpers::sphericalDist(GeographicNode_Ptr& from, GeographicNode_
     return GeometricHelpers::sphericalDist(p1, p2);
 }
 
-std::pair<double, double> GeometricHelpers::getMidPointCoordinates(GeographicNode_Ptr& from, GeographicNode_Ptr& to) {
+GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(GeographicNode_Ptr& from, GeographicNode_Ptr& to) {
     Position p1(from->lat(), from->lon());
     Position p2(to->lat(), to->lon());
     return GeometricHelpers::getMidPointCoordinates(p1, p2);
 }
 
-std::pair<double, double> GeometricHelpers::getMidPointCoordinates(Position& n1, Position& n2) {
+GeographicPositionTuple GeometricHelpers::getMidPointCoordinates(Position& n1, Position& n2) {
     // calculate midpoint
     // http://www.movable-type.co.uk/scripts/latlong.html
 

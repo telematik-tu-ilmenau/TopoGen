@@ -221,8 +221,8 @@ void NodeImporter::importSubmarineCableEdges(BaseTopology_Ptr base_topo) {
             continue;
         }
 
-        Coordinate c1 = std::make_pair(edge.coord1.first, edge.coord1.second);
-        Coordinate c2 = std::make_pair(edge.coord2.first, edge.coord2.second);
+        GeographicPositionTuple c1 = std::make_pair(edge.coord1.first, edge.coord1.second);
+        GeographicPositionTuple c2 = std::make_pair(edge.coord2.first, edge.coord2.second);
 
         if (_fallbackProjection.find(c1) != _fallbackProjection.end())
             c1 = _fallbackProjection.at(c1);

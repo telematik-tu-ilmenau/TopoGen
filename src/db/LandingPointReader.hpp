@@ -30,11 +30,10 @@
 #ifndef LANDINGPOINTREADER_HPP
 #define LANDINGPOINTREADER_HPP
 
-#include "SQLiteReader.hpp"
-#include "ResultIterator.hpp"
-#include <sqlite3.h>
-#include <string>
 #include "geo/SeaCableLandingPoint.hpp"
+#include "ResultIterator.hpp"
+#include "SQLiteReader.hpp"
+#include <string>
 
 class LandingPointReader : public SQLiteReader, public ResultIterator<SeaCableLandingPoint> {
    public:

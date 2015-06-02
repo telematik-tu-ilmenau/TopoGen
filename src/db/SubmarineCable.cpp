@@ -28,8 +28,9 @@
  */
 
 #include "SubmarineCable.hpp"
-#include <iostream>
+
 #include <boost/log/trivial.hpp>
+#include <iostream>
 
 SubmarineCable::SubmarineCable(std::string dbPath) {
     int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);

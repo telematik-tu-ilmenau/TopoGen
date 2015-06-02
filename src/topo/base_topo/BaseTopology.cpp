@@ -103,9 +103,9 @@ void BaseTopology::prune() {
     }
 }
 
-std::vector<std::pair<double, double>> BaseTopology::getHighestDegreeNodes(unsigned int amount, bool USonly) {
-    std::multimap<int, std::pair<double, double>> degreeMap;
-    std::vector<std::pair<double, double>> toReturn;
+std::vector<GeographicPositionTuple> BaseTopology::getHighestDegreeNodes(unsigned int amount, bool USonly) {
+    std::multimap<int, GeographicPositionTuple> degreeMap;
+    std::vector<GeographicPositionTuple> toReturn;
     Graph_Ptr graph = getGraph();
     Graph::NodeMap<int> nodeMap(*graph);
 

@@ -30,10 +30,9 @@
 #ifndef SQLITELOCATIONREADER_HPP
 #define SQLITELOCATIONREADER_HPP
 
-
 #include "geo/CityNode.hpp"
-#include "SQLiteReader.hpp"
 #include "ResultIterator.hpp"
+#include "SQLiteReader.hpp"
 #include <sqlite3.h>
 #include <string>
 

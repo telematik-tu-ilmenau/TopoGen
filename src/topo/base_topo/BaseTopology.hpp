@@ -32,6 +32,7 @@
 
 #include "geo/GeographicEdge.hpp"
 #include "geo/GeographicNode.hpp"
+#include "geo/GeographicPosition.hpp"
 #include "topo/Graph.hpp"
 #include <memory>
 #include <list>
@@ -58,7 +59,7 @@ class BaseTopology {
     void prune();
 
     // debug
-    std::vector<std::pair<double, double>> getHighestDegreeNodes(unsigned int amount = 2, bool USonly = false);
+    std::vector<GeographicPositionTuple> getHighestDegreeNodes(unsigned int amount = 2, bool USonly = false);
 
    protected:
    private:

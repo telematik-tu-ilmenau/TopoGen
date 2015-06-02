@@ -30,24 +30,19 @@
 #ifndef GEOGRAPHICNODE_HPP
 #define GEOGRAPHICNODE_HPP
 
+#include "GeographicPosition.hpp"
 #include <vector>
 #include <memory>
 
-class GeographicNode {
+class GeographicNode : public GeographicPosition<double> {
    public:
     GeographicNode();
     GeographicNode(const GeographicNode& other);
     GeographicNode(int id, double lat, double lon);
     GeographicNode& operator=(const GeographicNode& other);
-    virtual double lat();
-    virtual double lon();
-    virtual std::pair<double, double> coord();
+    virtual GeographicPositionTuple coord();
     virtual int id();
     virtual void setId(int i);
-    virtual void setLat(double lat);
-    virtual void setLon(double lon);
-    virtual void setInvalid();
-    virtual bool isValid();
 
     // for usage as map key
     virtual bool operator<(const GeographicNode& other) const;
@@ -55,9 +50,6 @@ class GeographicNode {
 
    protected:
     int _id;
-    double _latitude;
-    double _longitude;
-    bool _valid;
 };
 
 typedef std::shared_ptr<GeographicNode> GeographicNode_Ptr;

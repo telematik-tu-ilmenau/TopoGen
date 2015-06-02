@@ -36,6 +36,7 @@
 #include "db/SQLiteAreaPopulationReader.hpp"
 #include "geo/CityNode.hpp"
 #include "geo/GeometricHelpers.hpp"
+#include "geo/GeographicPosition.hpp"
 #include "geo/SeaCableLandingPoint.hpp"
 #include "util/Util.hpp"
 #include <algorithm>
@@ -93,7 +94,7 @@ void PopulationDensityFilter::filter(void) {
             }
 
             // INIT Bounding box reader
-            std::pair<double, double> midPoint = GeometricHelpers::getMidPointCoordinates(p1, p2);
+            GeographicPositionTuple midPoint = GeometricHelpers::getMidPointCoordinates(p1, p2);
             Position midPointPos(midPoint.first, midPoint.second);
             SQLiteAreaPopulationReader_Ptr areaReader(new SQLiteAreaPopulationReader(
                 _dbFilename, midPoint.first, midPoint.second, GeometricHelpers::rad2deg(c)));

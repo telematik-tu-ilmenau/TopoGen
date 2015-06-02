@@ -28,10 +28,11 @@
  */
 
 #include "InternetUsageStatistics.hpp"
-#include <sstream>
+
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <iostream>
-#include <boost/log/trivial.hpp>
+#include <sstream>
 
 InternetUsageStatistics::InternetUsageStatistics(std::string dbPath) {
     int retval = sqlite3_open(dbPath.c_str(), &_sqliteDB);

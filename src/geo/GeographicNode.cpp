@@ -34,17 +34,13 @@ GeographicNode::GeographicNode() {
 }
 
 GeographicNode::GeographicNode(int id, double lat, double lon)
-    : _id(id), _latitude(lat), _longitude(lon), _valid(true) {
+    : GeographicPosition<double>(lat, lon), _id(id) {
 }
 
-GeographicNode::GeographicNode(const GeographicNode& other) {
-    this->_id = other._id;
-    this->_latitude = other._latitude;
-    this->_longitude = other._longitude;
-    this->_valid = other._valid;
+GeographicNode::GeographicNode(const GeographicNode& other) : GeographicPosition<double>(other._latitude, other._longitude), _id(other._id) {
 }
 
-GeographicNode& GeographicNode::operator=(const GeographicNode& other) {
+GeographicNode& GeographicNode::operator=(const GeographicNode& other)  {
     this->_id = other._id;
     this->_latitude = other._latitude;
     this->_longitude = other._longitude;
@@ -52,14 +48,7 @@ GeographicNode& GeographicNode::operator=(const GeographicNode& other) {
     return *this;
 }
 
-double GeographicNode::lat() {
-    return _latitude;
-}
-
-double GeographicNode::lon() {
-    return _longitude;
-}
-std::pair<double, double> GeographicNode::coord() {
+GeographicPositionTuple GeographicNode::coord() {
     return std::make_pair(_latitude, _longitude);
 }
 
@@ -74,20 +63,4 @@ void GeographicNode::setId(int i) {
 // for usage as map key
 bool GeographicNode::operator<(const GeographicNode& other) const {
     return this->_id < other._id;
-}
-
-void GeographicNode::setLat(double lat) {
-    _latitude = lat;
-}
-
-void GeographicNode::setLon(double lon) {
-    _longitude = lon;
-}
-
-void GeographicNode::setInvalid() {
-    _valid = false;
-}
-
-bool GeographicNode::isValid() {
-    return _valid;
 }

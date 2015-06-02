@@ -30,11 +30,10 @@
 #ifndef SQLITEAREAPOPULATIONREADER_HPP
 #define SQLITEAREAPOPULATIONREADER_HPP
 
-#include "SQLiteReader.hpp"
-#include "ResultIterator.hpp"
 #include "geo/CityNode.hpp"
 #include "geo/PopulatedPosition.hpp"
-#include <sqlite3.h>
+#include "ResultIterator.hpp"
+#include "SQLiteReader.hpp"
 #include <string>
 
 class SQLiteAreaPopulationReader;

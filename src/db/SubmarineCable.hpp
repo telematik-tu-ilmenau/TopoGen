@@ -30,13 +30,14 @@
 #ifndef SUBMARINECABLE_HPP
 #define SUBMARINECABLE_HPP
 
-#include "SQLiteReader.hpp"
+#include "geo/GeographicPosition.hpp"
 #include "ResultIterator.hpp"
+#include "SQLiteReader.hpp"
 #include <string>
 
 struct SubmarineCableEdge {
-    std::pair<double, double> coord1;
-    std::pair<double, double> coord2;
+    GeographicPositionTuple coord1;
+    GeographicPositionTuple coord2;
 };
 
 class SubmarineCable : public SQLiteReader, public ResultIterator<SubmarineCableEdge> {

@@ -28,10 +28,11 @@
  */
 
 #include "SQLiteAreaPopulationReader.hpp"
-#include <sstream>
+
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <iostream>
-#include <boost/log/trivial.hpp>
+#include <sstream>
 
 SQLiteAreaPopulationReader::SQLiteAreaPopulationReader(std::string dbPath, double lat, double lon, double length)
     : _lat(lat), _lon(lon), _length(length) {

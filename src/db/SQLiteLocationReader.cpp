@@ -28,10 +28,11 @@
  */
 
 #include "SQLiteLocationReader.hpp"
-#include <sstream>
+
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <iostream>
-#include <boost/log/trivial.hpp>
+#include <sstream>
 
 SQLiteLocationReader::SQLiteLocationReader(std::string dbPath, int populationThreshold)
     : _populationThreshold(populationThreshold) {

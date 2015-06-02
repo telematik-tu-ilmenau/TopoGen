@@ -94,8 +94,3 @@ CityNode SQLiteLocationReader::getNext() {
     }
     return ci;
 }
-
-SQLiteLocationReader::~SQLiteLocationReader() {
-    sqlite3_finalize(_stmt);
-    sqlite3_close(_sqliteDB);
-}

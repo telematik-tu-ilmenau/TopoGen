@@ -34,7 +34,10 @@
 
 class SQLiteReader {
 public:
-    virtual ~SQLiteReader() {}
+    virtual ~SQLiteReader() {
+        sqlite3_finalize(_stmt);
+        sqlite3_close(_sqliteDB);
+    }
 protected:
     sqlite3* _sqliteDB;
     sqlite3_stmt* _stmt;

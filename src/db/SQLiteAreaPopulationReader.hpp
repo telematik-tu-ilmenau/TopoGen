@@ -48,8 +48,6 @@ class SQLiteAreaPopulationReader : public SQLiteReader, public ResultIterator<Po
 
     PopulatedPosition getNext();
 
-    virtual ~SQLiteAreaPopulationReader();
-
    private:
     double _lat;
     double _lon;

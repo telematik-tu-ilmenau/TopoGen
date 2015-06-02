@@ -90,8 +90,3 @@ std::string LandingPointReader::getContinentLandingPoint(std::string name) {
 
     return result;
 }
-
-LandingPointReader::~LandingPointReader() {
-    sqlite3_finalize(_stmt);
-    sqlite3_close(_sqliteDB);
-}

@@ -44,7 +44,6 @@ class SubmarineCable : public SQLiteReader, public ResultIterator<SubmarineCable
    public:
     SubmarineCable(std::string dbPath);
     SubmarineCableEdge getNext();
-    virtual ~SubmarineCable();
 };
 
 #endif

@@ -44,8 +44,6 @@ class SQLiteLocationReader : public SQLiteReader, public ResultIterator<CityNode
 
     CityNode getNext();
 
-    virtual ~SQLiteLocationReader();
-
    private:
     int _populationThreshold;
 };

@@ -66,8 +66,3 @@ double InternetUsageStatistics::operator[](std::string& countryName) {
     sqlite3_reset(_stmt);
     return result;
 }
-
-InternetUsageStatistics::~InternetUsageStatistics() {
-    sqlite3_finalize(_stmt);
-    sqlite3_close(_sqliteDB);
-}

@@ -39,7 +39,6 @@ class LandingPointReader : public SQLiteReader, public ResultIterator<SeaCableLa
    public:
     LandingPointReader(std::string dbName);
     SeaCableLandingPoint getNext();
-    virtual ~LandingPointReader();
 
    private:
 

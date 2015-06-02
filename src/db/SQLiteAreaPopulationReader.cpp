@@ -89,8 +89,3 @@ PopulatedPosition SQLiteAreaPopulationReader::getNext() {
     }
     return pp;
 }
-
-SQLiteAreaPopulationReader::~SQLiteAreaPopulationReader() {
-    sqlite3_finalize(_stmt);
-    sqlite3_close(_sqliteDB);
-}

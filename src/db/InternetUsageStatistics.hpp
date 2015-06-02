@@ -39,8 +39,6 @@ class InternetUsageStatistics : public SQLiteReader {
 
     double operator[](std::string& countryName);
 
-    virtual ~InternetUsageStatistics();
-
    private:
 };
 

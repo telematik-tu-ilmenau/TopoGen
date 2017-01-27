@@ -40,7 +40,7 @@ SubmarineCable::SubmarineCable(std::string dbPath) {
         BOOST_LOG_TRIVIAL(error) << "Database connection failed in SubmarineCable!";
     }
 
-    std::string queryString = "SELECT lat1, lon1, lat2, lon2 FROM submarinecable_edges";
+    std::string queryString = "SELECT lat1, lon1, lat2, lon2, link_id FROM submarinecable_edges";
     sqlite3_prepare_v2(_sqliteDB, queryString.c_str(), queryString.length(), &_stmt, NULL);
 
     retval = sqlite3_step(_stmt);
@@ -55,6 +55,7 @@ SubmarineCableEdge SubmarineCable::getNext() {
     double lon1 = sqlite3_column_double(_stmt, 1);
     double lat2 = sqlite3_column_double(_stmt, 2);
     double lon2 = sqlite3_column_double(_stmt, 3);
+    int linkID = sqlite3_column_int(_stmt, 4);
 
     int retval = sqlite3_step(_stmt);
     if (retval == SQLITE_ROW)
@@ -62,7 +63,7 @@ SubmarineCableEdge SubmarineCable::getNext() {
     else
         _rowAvailable = false;
 
-    SubmarineCableEdge edge(std::make_pair(lat1, lon1), std::make_pair(lat2, lon2));
+    SubmarineCableEdge edge(std::make_pair(lat1, lon1), std::make_pair(lat2, lon2), linkID);
 
     return edge;
 }

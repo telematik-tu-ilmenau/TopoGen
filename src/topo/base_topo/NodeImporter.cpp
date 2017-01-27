@@ -214,11 +214,49 @@ void NodeImporter::importSubmarineCableEdges(BaseTopology_Ptr base_topo) {
     std::unique_ptr<SubmarineCable> sc(new SubmarineCable(_dbFilename));
 
     unsigned int skipped = 0;
+
+    int lastLinkID = -1;
+    GeographicPositionTuple posFirst;
+    GeographicPositionTuple posLast;
+    std::vector<GeographicNode_Ptr> edgePositions;
+
     while (sc->hasNext()) {
         SubmarineCableEdge edge = sc->getNext();
+
         if (edge.coord1 == edge.coord2) {
             ++skipped;
             continue;
+        }
+
+        if(edge.linkID != lastLinkID) {
+            for(GeographicNode_Ptr n1 : edgePositions) {
+                bool n1OK = fabs(fabs(n1->lon()) - 180.0) < 1.0;
+
+                for(GeographicNode_Ptr n2 : edgePositions) {
+                    if(n1 == n2 || n2->id() < n1->id())
+                        continue;
+
+                    bool n2OK = fabs(fabs(n2->lon()) - 180.0) < 1.0;
+
+                    if(n1OK && n2OK && GeometricHelpers::sphericalDistToKM(GeometricHelpers::sphericalDist(n1, n2)) < 4) {
+                        Graph::Node u;
+                        Graph::Node v;
+
+                        u = base_topo->getGraph()->nodeFromId(n1->id());
+                        v = base_topo->getGraph()->nodeFromId(n2->id());
+
+                        if(lemon::findEdge(*base_topo->getGraph(), u, v) != lemon::INVALID)
+                            continue;
+
+                        GeographicEdge_Ptr edge_ptr(new SeaCableEdge);
+                        assert(u != v);
+                        base_topo->addEdge(u, v, edge_ptr);
+                        BOOST_LOG_TRIVIAL(info) << "Add extra edge on link:" << edge.linkID << " (" << n1->id() << "," << n2->id() << ")";
+                    }
+                }
+            }
+            edgePositions.clear();
+            lastLinkID = edge.linkID;
         }
 
         GeographicPositionTuple c1 = std::make_pair(edge.coord1.first, edge.coord1.second);
@@ -238,6 +276,9 @@ void NodeImporter::importSubmarineCableEdges(BaseTopology_Ptr base_topo) {
 
         GeographicNode_Ptr n1 = findNearest(c1N);
         GeographicNode_Ptr n2 = findNearest(c2N);
+
+        edgePositions.push_back(n1);
+        edgePositions.push_back(n2);
 
         Graph::Node u;
         Graph::Node v;

@@ -31,6 +31,7 @@
 #define GRAPH_HPP
 
 #include <lemon/list_graph.h>
+
 #include <memory>
 #include <list>
 
